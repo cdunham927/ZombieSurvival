@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3996374827193263243
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3996374827193263242}
+  - component: {fileID: 4658862465790703804}
+  m_Layer: 0
+  m_Name: Colt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3996374827193263242
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3996374827193263243}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5763085, y: 0.24526747, z: -3.336423}
+  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4658862465790703804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3996374827193263243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f774073aa272d2e4aa1376bfecf57224, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  weaponName: Colt
+  dmgLow: 3
+  dmgHigh: 4
+  sprite: {fileID: 9083407258458956384, guid: c0807a95ea783b74fa46a6b2e3b2f4ef, type: 3}
+  spriteWidth: 35
+  spriteHeight: 30
+  thisType: 0
+  cooldown: 0.15
+  spreadLow: 3
+  spreadHigh: 8
+  cost: 0
+  ammoCost: 0
+  knockback: 5
+  craftingMaterials: []
+  clipSize: 12
+  ammoImage: {fileID: 21300000, guid: bf30922d987224d4c8342e8a5cc03e5c, type: 3}
+  reloadTime: 1.25
+  singleReload: 0
+  shellCount: 0
+  sinAmplitude: 0
+  sinFrequency: 0
+  buyText: {fileID: 0}
