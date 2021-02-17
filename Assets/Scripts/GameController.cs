@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController cont;
     public GameObject shopMenu;
-
+    public bool inMenu;
     //Waves
     public int wave = 1;
     public GameObject[] enemy;
@@ -29,6 +31,13 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        if (cont == null)
+        {
+            cont = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else Destroy(gameObject);
+
         //Get info for bounds
         bounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0f));
         enemiesSpawned = 0;

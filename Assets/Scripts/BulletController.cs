@@ -51,7 +51,6 @@ public class BulletController : MonoBehaviour
 
     void Disable()
     {
-        //transform.localScale *= 20f * Time.deltaTime;
         gameObject.SetActive(false);
     }
 
@@ -70,6 +69,10 @@ public class BulletController : MonoBehaviour
                 atk /= 2f;
                 //Debug.Log("Now does " + atk + " damage");
             }
+        }
+        if (collision.CompareTag("Wall"))
+        {
+            Invoke("Disable", 0.001f);
         }
     }
 }

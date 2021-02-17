@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
 {
     //Singleton behavior for player
     public static PlayerController player;
+    PlayerExtraStats extraStats;
 
     //Stats
     public float maxHp;
@@ -56,25 +57,30 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
 
         DontDestroyOnLoad(gameObject);
 
-        playerActions = new PlayerActions();
-        playerActions.PlayerControls.Move.performed += ctx => move = ctx.ReadValue<Vector2>();
-        playerActions.PlayerControls.Run.performed += ctx => run = ctx.ReadValue<float>();
-        playerActions.PlayerControls.RMB.performed += ctx => RMB = ctx.ReadValue<float>();
+        //playerActions = new PlayerActions();
+        //playerActions.PlayerControls.Move.performed += ctx => move = ctx.ReadValue<Vector2>();
+        //playerActions.PlayerControls.Run.performed += ctx => run = ctx.ReadValue<float>();
+        //playerActions.PlayerControls.RMB.performed += ctx => RMB = ctx.ReadValue<float>();
 
+        extraStats = GetComponent<PlayerExtraStats>();
         weapon = GetComponentInChildren<WeaponController>();
         bod = GetComponent<Rigidbody2D>();
         curHp = maxHp;
         curStam = maxStam;
+
+        money = extraStats.startMoney;
     }
 
     private void Update()
     {
-        bool myBool = Mathf.Approximately(RMB, 1);
-        bool myRunBool = Mathf.Approximately(run, 1);
+        //bool myBool = Mathf.Approximately(RMB, 1);
+        bool myBool = Input.GetButton("RMB");
+        //bool myRunBool = Mathf.Approximately(run, 1);
+        bool myRunBool = Input.GetButton("Run");
         //Movement
         //Get Inputs
 
-        //move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         //Move if any move buttons are pressed
         if (move.x != 0) bod.AddForce(Vector2.right * curSpd * move.x * Time.deltaTime);

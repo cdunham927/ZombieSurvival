@@ -35,11 +35,13 @@ public abstract class EnemyController : MonoBehaviour
     Animator anim;
     Vector3 startPos;
     protected float distance;
+    SpriteRenderer rend;
 
     private void Awake()
     {
         startPos = transform.position;
         anim = GetComponent<Animator>();
+        rend = GetComponent<SpriteRenderer>();
         startScale = transform.localScale;
         seeker = GetComponent<Seeker>();
         bod = GetComponent<Rigidbody2D>();
@@ -99,11 +101,13 @@ public abstract class EnemyController : MonoBehaviour
         {
             if (bod.velocity.x >= 0.01f)
             {
-                transform.localScale = startScale;
+                //transform.localScale = startScale;
+                rend.flipX = false;
             }
             else if (bod.velocity.x <= -0.01f)
             {
-                transform.localScale = new Vector3(-startScale.x, startScale.y, startScale.z);
+                //transform.localScale = new Vector3(-startScale.x, startScale.y, startScale.z);
+                rend.flipX = true;
             }
         }
         else

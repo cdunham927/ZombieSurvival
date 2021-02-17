@@ -16,4 +16,5 @@ public class PlayerExtraStats : MonoBehaviour
     public float elementalChanceMod;
     public float shopPriceMod;
     public float dropMod;
+    public float startMoney;
 }
