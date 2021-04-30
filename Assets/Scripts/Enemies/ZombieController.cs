@@ -114,7 +114,7 @@ public class ZombieController : EnemyController, IDamageable<float>, IKillable
         curState = states.chase;
     }
 
-    void OnDrawGizmoss()
+    void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);

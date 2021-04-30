@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "431787330773",
+    "project_id": "zombiesurvival-4fc6f",
+    "firebase_url":"https://zombiesurvival-4fc6f-default-rtdb.firebaseio.com/",
+    "storage_bucket": "zombiesurvival-4fc6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431787330773:android:a44cbcb642f62d5ba0e65c",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.ZombieSurvival"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431787330773-brs7p34l59j184je40to5c9sg453ohku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOVrll8oa3zkzH-yT0gMXIbXrwx6-RANs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "431787330773-brs7p34l59j184je40to5c9sg453ohku.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
