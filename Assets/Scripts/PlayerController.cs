@@ -167,16 +167,6 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     {
 
     }
-
-    private void OnEnable()
-    {
-        playerActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        playerActions.Disable();
-    }
 }
 
 public class QuestHolder : MonoBehaviour
