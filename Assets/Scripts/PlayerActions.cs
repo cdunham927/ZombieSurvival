@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class PlayerActions : IInputActionCollection, IDisposable
+public class @PlayerActions : IInputActionCollection, IDisposable
 {
-    private InputActionAsset asset;
-    public PlayerActions()
+    public InputActionAsset asset { get; }
+    public @PlayerActions()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""PlayerActions"",
@@ -254,8 +254,8 @@ public class PlayerActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_MouseScroll;
     public struct PlayerControlsActions
     {
-        private PlayerActions m_Wrapper;
-        public PlayerControlsActions(PlayerActions wrapper) { m_Wrapper = wrapper; }
+        private @PlayerActions m_Wrapper;
+        public PlayerControlsActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_PlayerControls_Move;
         public InputAction @Shoot => m_Wrapper.m_PlayerControls_Shoot;
         public InputAction @Aim => m_Wrapper.m_PlayerControls_Aim;
@@ -271,46 +271,46 @@ public class PlayerActions : IInputActionCollection, IDisposable
         {
             if (m_Wrapper.m_PlayerControlsActionsCallbackInterface != null)
             {
-                Move.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMove;
-                Move.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMove;
-                Move.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMove;
-                Shoot.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnShoot;
-                Shoot.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnShoot;
-                Shoot.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnShoot;
-                Aim.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAim;
-                Aim.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAim;
-                Aim.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAim;
-                RMB.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRMB;
-                RMB.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRMB;
-                RMB.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRMB;
-                Run.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRun;
-                Run.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRun;
-                Run.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRun;
-                MouseScroll.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMouseScroll;
-                MouseScroll.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMouseScroll;
-                MouseScroll.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMouseScroll;
+                @Move.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMove;
+                @Move.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMove;
+                @Move.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMove;
+                @Shoot.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnShoot;
+                @Shoot.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnShoot;
+                @Shoot.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnShoot;
+                @Aim.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAim;
+                @Aim.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAim;
+                @Aim.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnAim;
+                @RMB.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRMB;
+                @RMB.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRMB;
+                @RMB.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRMB;
+                @Run.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRun;
+                @Run.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRun;
+                @Run.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRun;
+                @MouseScroll.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMouseScroll;
+                @MouseScroll.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMouseScroll;
+                @MouseScroll.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnMouseScroll;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
             {
-                Move.started += instance.OnMove;
-                Move.performed += instance.OnMove;
-                Move.canceled += instance.OnMove;
-                Shoot.started += instance.OnShoot;
-                Shoot.performed += instance.OnShoot;
-                Shoot.canceled += instance.OnShoot;
-                Aim.started += instance.OnAim;
-                Aim.performed += instance.OnAim;
-                Aim.canceled += instance.OnAim;
-                RMB.started += instance.OnRMB;
-                RMB.performed += instance.OnRMB;
-                RMB.canceled += instance.OnRMB;
-                Run.started += instance.OnRun;
-                Run.performed += instance.OnRun;
-                Run.canceled += instance.OnRun;
-                MouseScroll.started += instance.OnMouseScroll;
-                MouseScroll.performed += instance.OnMouseScroll;
-                MouseScroll.canceled += instance.OnMouseScroll;
+                @Move.started += instance.OnMove;
+                @Move.performed += instance.OnMove;
+                @Move.canceled += instance.OnMove;
+                @Shoot.started += instance.OnShoot;
+                @Shoot.performed += instance.OnShoot;
+                @Shoot.canceled += instance.OnShoot;
+                @Aim.started += instance.OnAim;
+                @Aim.performed += instance.OnAim;
+                @Aim.canceled += instance.OnAim;
+                @RMB.started += instance.OnRMB;
+                @RMB.performed += instance.OnRMB;
+                @RMB.canceled += instance.OnRMB;
+                @Run.started += instance.OnRun;
+                @Run.performed += instance.OnRun;
+                @Run.canceled += instance.OnRun;
+                @MouseScroll.started += instance.OnMouseScroll;
+                @MouseScroll.performed += instance.OnMouseScroll;
+                @MouseScroll.canceled += instance.OnMouseScroll;
             }
         }
     }
