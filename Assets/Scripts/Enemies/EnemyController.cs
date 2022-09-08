@@ -14,11 +14,14 @@ public abstract class EnemyController : MonoBehaviour
     public Image health;
     public float lerpSpd = 5f;
     public float timeBetweenAttacks;
+    //Current movement speed
+    protected float curSpd;
 
     //AI stuff
     public Transform target;
     public float nextWaypointDistance = 2f;
     public float spd;
+    public float slowSpd;
     Path path;
     int currentWaypoint = 0;
     bool reachedEndOfPath = false;
@@ -37,6 +40,25 @@ public abstract class EnemyController : MonoBehaviour
     protected float distance;
     SpriteRenderer rend;
 
+    //Enemy drops
+    public float moneyDropChance;
+    public GameObject moneyDrop;
+    public float healthDropChance;
+    public GameObject healthDrop;
+    public float ammoDropChance;
+    public GameObject[] ammoDrop;
+    public float allAmmoDropChance;
+    public GameObject allAmmoDrop;
+
+    [Range(1, 250)]
+    public float spawnScore;
+
+    public SpriteRenderer bloodRend;
+    public Sprite[] bloodSprites;
+
+    public ParticleSystem dmgParts;
+    public int dmgPartsAmt = 5;
+
     private void Awake()
     {
         startPos = transform.position;
@@ -48,6 +70,33 @@ public abstract class EnemyController : MonoBehaviour
 
         InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
+
+    public virtual void OnEnable()
+    {
+        curSpd = spd;
+    }
+
+    protected void CheckHpAnim()
+    {
+        if (hp < (maxHp / 3))
+        {
+            bloodRend.sprite = bloodSprites[2];
+            Debug.Log("hurting bad");
+        }
+        else if (hp < (2 * maxHp / 3))
+        {
+            bloodRend.sprite = bloodSprites[1];
+            Debug.Log("hurt");
+        }
+        else
+        {
+            bloodRend.sprite = bloodSprites[0];
+            Debug.Log("fine");
+        }
+    }
+
+    public virtual void Damage(float damage) { }
+    public virtual void Die() { }
 
     void UpdatePath()
     {
@@ -86,7 +135,7 @@ public abstract class EnemyController : MonoBehaviour
         }
 
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - bod.position).normalized;
-        Vector2 force = direction * spd * Time.deltaTime;
+        Vector2 force = direction * curSpd * Time.deltaTime;
 
         bod.AddForce(force);
 
@@ -95,7 +144,7 @@ public abstract class EnemyController : MonoBehaviour
         {
             currentWaypoint++;
         }
-
+        /*
         //Face the direction we're moving
         if (horizontalFace)
         {
@@ -122,7 +171,9 @@ public abstract class EnemyController : MonoBehaviour
                 //Face down
                 anim.SetInteger("dir", 0);
             }
-        }
+        }*/
+        anim.SetFloat("moveX", bod.velocity.x);
+        anim.SetFloat("moveY", bod.velocity.y);
     }
 
     public virtual void Idle() { }
@@ -130,4 +181,20 @@ public abstract class EnemyController : MonoBehaviour
     public virtual void Chase() { }
 
     public virtual void Attack() { }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Wire"))
+        {
+            curSpd = slowSpd;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Wire"))
+        {
+            curSpd = spd;
+        }
+    }
 }

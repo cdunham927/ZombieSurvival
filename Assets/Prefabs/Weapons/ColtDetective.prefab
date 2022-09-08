@@ -43,8 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f774073aa272d2e4aa1376bfecf57224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: 
+  itemDescription: 
+  cost: 0
   id: 1
-  weaponName: Revolver
   dmgLow: 14
   dmgHigh: 20
   sprite: {fileID: -2753133214986509842, guid: c0807a95ea783b74fa46a6b2e3b2f4ef, type: 3}
@@ -54,12 +56,12 @@ MonoBehaviour:
   cooldown: 0.75
   spreadLow: 1.25
   spreadHigh: 2.5
-  cost: 0
   ammoCost: 0
   knockback: 13
   craftingMaterials: []
   clipSize: 6
-  ammoImage: {fileID: 21300000, guid: bf30922d987224d4c8342e8a5cc03e5c, type: 3}
+  ammoImage: {fileID: 8431077131804139943, guid: 2fdd66a6f196eae479241653c9214d8e,
+    type: 3}
   reloadTime: 0.5
   singleReload: 1
   shellCount: 0

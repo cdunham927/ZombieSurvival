@@ -21,7 +21,7 @@ public class FlamethrowerController : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            collision.GetComponent < IDamageable<float>>().Damage(damage);
+            collision.GetComponent<EnemyController>().Damage(damage);
         }
     }
 
@@ -29,7 +29,7 @@ public class FlamethrowerController : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            collision.GetComponent < IDamageable<float>>().Damage(damage);
+            collision.GetComponent<EnemyController>().Damage(damage);
         }
     }
 }

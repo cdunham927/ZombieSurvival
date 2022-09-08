@@ -23,6 +23,7 @@ public class WeaponController : MonoBehaviour
     public GameObject bullet;
     public GameObject shell;
     public GameObject smgBullet;
+    public GameObject rocket;
     public GameObject shotgunShell;
     public int bulAmt;
     [HideInInspector]
@@ -33,6 +34,8 @@ public class WeaponController : MonoBehaviour
     public List<GameObject> shotgunShellList;
     [HideInInspector]
     public List<GameObject> smgBulletList;
+    [HideInInspector]
+    public List<GameObject> rocketList;
 
     //Rotation
     Vector3 mousePos;
@@ -84,6 +87,9 @@ public class WeaponController : MonoBehaviour
     float dmgHigh;
     int shellCount = 0;
 
+    public Equipment curEquipment;
+    public int equipUses = 0;
+
     //Reloading
     float reloadTime;
     bool reloading = false;
@@ -116,12 +122,38 @@ public class WeaponController : MonoBehaviour
     public Image reloadBarImageBG;
 
     public SniperController sniper;
+    public LineRenderer laserSight;
 
     //Flamethrower
     public FlamethrowerController flames;
     public Collider2D flameTrigger;
 
     float curTypeAmmo = 0;
+
+    public float zombarCooldownTime;
+    float zombarCooldown;
+    float dmgMod = 0;
+    public ScriptableFloat scriptDmg;
+
+    //Player can't move or shoot whilst in menus
+    public bool canShoot = true;
+
+    public Animator flashObj;
+    public Animator playerAnim;
+
+    //Audio
+    AudioSource src;
+    public AudioClip pistolShoot;
+    public AudioClip sniperShoot;
+    public AudioClip mgShoot;
+    public AudioClip shotgunShoot;
+    public AudioClip rpgShoot;
+    public AudioClip sgClick;
+    public AudioClip reloadClip;
+    public AudioClip singleReload;
+
+    public Image equipImage;
+    public TMP_Text equipText;
 
     private void Awake()
     {
@@ -140,6 +172,7 @@ public class WeaponController : MonoBehaviour
         accuracyMid = (accuracyLow + accuracyHigh) / 2;
         curAcc = accuracyMid;
 
+        src = GetComponent<AudioSource>();
         rend = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
 
@@ -154,6 +187,25 @@ public class WeaponController : MonoBehaviour
         if (startingItems != null) AddItem(startingItems);
 
         FillAmmo();
+
+        if (curEquipment != null) RefillEquip();
+
+        laserSight.enabled = false;
+    }
+
+    public void InMenu()
+    {
+        canShoot = false;
+    }
+
+    public void ExitMenu()
+    {
+        canShoot = true;
+    }
+
+    public void SetZombar()
+    {
+        zombarCooldown = zombarCooldownTime;
     }
 
     public void FillAmmo()
@@ -210,6 +262,32 @@ public class WeaponController : MonoBehaviour
         return obj;
     }
 
+    GameObject GetRocket()
+    {
+        if (rocketList.Count <= 0)
+        {
+            GameObject o = Instantiate(rocket, transform.position, Quaternion.identity);
+            rocketList.Add(o);
+            o.SetActive(false);
+
+            return o;
+        }
+        //Return hit obj
+        for (int i = 0; i < rocketList.Count; i++)
+        {
+            if (!rocketList[i].activeInHierarchy)
+            {
+                return rocketList[i];
+            }
+        }
+
+        GameObject obj = Instantiate(rocket, transform.position, Quaternion.identity);
+        rocketList.Add(obj);
+        obj.SetActive(false);
+
+        return obj;
+    }
+
     GameObject GetShot()
     {
         //Return hit obj
@@ -250,8 +328,18 @@ public class WeaponController : MonoBehaviour
     {
         bool myBool = Mathf.Approximately(aim, 1);
 
+        if (zombarCooldown > 0)
+        {
+            dmgMod = scriptDmg.val;
+            zombarCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            dmgMod = 0;
+        }
+
         //Firing
-        if (Input.GetMouseButton(0) && cools <= 0f)
+        if (Input.GetMouseButton(0) && cools <= 0f && canShoot)
         {
             //Check for if theres still ammo in the current clip
             if (hotbarSlotsAmmo[curSlot] > 0)
@@ -274,6 +362,13 @@ public class WeaponController : MonoBehaviour
                     case ((int)Items.types.flamethrower):
                         FireFlamethrower();
                         break;
+                    case ((int)Items.types.rpg):
+                        FireRocket();
+                        break;
+                        break;
+                    case ((int)Items.types.sniper):
+                        FireSniper();
+                        break;
                 }
                 reloading = false;
                 hotbarSlotsAmmo[curSlot]--;
@@ -295,6 +390,15 @@ public class WeaponController : MonoBehaviour
                     flameTrigger.enabled = false;
                 }
             }
+        }
+
+        //Use Equipment
+        if (Input.GetButtonDown("Fire2") && equipUses > 0 && curEquipment != null)
+        {
+            curEquipment.UseItem();
+            //curEquipment.fills--;
+            equipUses--;
+            equipText.text = "x" + equipUses.ToString();
         }
 
         if (Input.GetMouseButtonUp(0) && curWeapon == (int)Items.types.flamethrower)
@@ -342,6 +446,10 @@ public class WeaponController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && hotbarSlotsAmmo[curSlot] < playerItems[curSlot].clipSize && !reloading && canReload)
         {
             reloadHotbar[curSlot].fillAmount = 0f;
+            
+            if (playerItems[curSlot].singleReload) src.PlayOneShot(singleReload);
+            else src.PlayOneShot(reloadClip);
+            
             reloading = true;
         }
 
@@ -415,35 +523,43 @@ public class WeaponController : MonoBehaviour
         {
             case ((int)Items.types.pistol):
                 curTypeAmmo = pistolAmmo;
-                canReload = (pistolAmmo >= playerItems[curSlot].clipSize);
+                canReload = (pistolAmmo > 0);
                 break;
             case ((int)Items.types.machinegun):
-                canReload = (machinegunAmmo >= playerItems[curSlot].clipSize);
+                canReload = (machinegunAmmo > 0);
                 curTypeAmmo = machinegunAmmo;
                 break;
             case ((int)Items.types.shotgun):
-                canReload = (shotgunAmmo >= playerItems[curSlot].clipSize);
+                canReload = (shotgunAmmo > 0);
                 curTypeAmmo = shotgunAmmo;
                 break;
             case ((int)Items.types.flamethrower):
-                canReload = (flamethrowerAmmo >= playerItems[curSlot].clipSize);
+                canReload = (flamethrowerAmmo > 0);
                 curTypeAmmo = flamethrowerAmmo;
                 break;
+            case ((int)Items.types.sniper):
+                curTypeAmmo = sniperAmmo;
+                canReload = (sniperAmmo > 0);
+                break;
             case ((int)Items.types.rpg):
-                canReload = (rpgAmmo >= playerItems[curSlot].clipSize);
+                canReload = (rpgAmmo > 0);
                 curTypeAmmo = rpgAmmo;
                 break;
         }
     }
+    Vector3 lookPos;
 
     private void LateUpdate()
     {
         //Sprite position
         //Vector3 mousePos = Camera.main.ScreenToViewportPoint(mousePosition);
-        Vector3 lookPos = Camera.main.ScreenToViewportPoint(mousePos);
+        lookPos = Camera.main.ScreenToViewportPoint(mousePos);
         //Show weapon in front of or behind player
         rend.sortingOrder = (lookPos.y < 0.5f) ? 3 : 1;
         rend.flipY = (lookPos.x < 0.5f) ? true : false;
+
+        //Animate player
+        playerAnim.SetFloat("moveY", lookPos.y);
 
         //Look at mouse
         //Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
@@ -461,6 +577,42 @@ public class WeaponController : MonoBehaviour
         //anim.SetInteger("curWeapon", curSlot);
     }
 
+    public bool needsAmmo(Items.types ty)
+    {
+        //Check to see if ammo is full for certain type
+        switch(ty)
+        {
+            case (Items.types.pistol):
+                if (pistolAmmo < maxPistolAmmo) return true;
+                break;
+            case (Items.types.machinegun):
+                if (machinegunAmmo < maxMachinegunAmmo) return true;
+                break;
+            case (Items.types.shotgun):
+                if (shotgunAmmo < maxShotgunAmmo) return true;
+                break;
+            case (Items.types.sniper):
+                if (sniperAmmo < maxSniperAmmo) return true;
+                break;
+            case (Items.types.rpg):
+                if (rpgAmmo < maxRpgAmmo) return true;
+                break;
+            case (Items.types.flamethrower):
+                if (flamethrowerAmmo < maxFlamethrowerAmmo) return true;
+                break;
+        }
+
+        return false;
+    }
+
+    public bool needsAnyAmmo()
+    {
+        if (pistolAmmo < maxPistolAmmo || machinegunAmmo < maxMachinegunAmmo || shotgunAmmo < maxShotgunAmmo | sniperAmmo < maxSniperAmmo
+            | rpgAmmo < maxRpgAmmo | flamethrowerAmmo < maxFlamethrowerAmmo) return true;
+
+        return false;
+    }
+
     public void RefillAmmo(Items.types ty)
     {
         switch ((int)ty)
@@ -473,6 +625,9 @@ public class WeaponController : MonoBehaviour
                 break;
             case ((int)Items.types.shotgun):
                 shotgunAmmo = maxShotgunAmmo;
+                break;
+            case ((int)Items.types.sniper):
+                sniperAmmo = maxSniperAmmo;
                 break;
             case ((int)Items.types.flamethrower):
                 flamethrowerAmmo = maxFlamethrowerAmmo;
@@ -492,10 +647,38 @@ public class WeaponController : MonoBehaviour
         return false;
     }
 
+    public bool hasEquipment(Equipment it)
+    {
+        if (it.name == curEquipment.name)
+        {
+            return true;
+        }
+        else return false;
+    }
+
     public bool hasRoom()
     {
         if (filledSlots <= maxSlots - 1) return true;
         return false;
+    }
+
+    public void SwitchEquipment(Equipment it)
+    {
+        curEquipment = it;
+        RefillEquip();
+
+        //Gotta change the ui and count here too
+        equipImage.sprite = it.sprite;
+        //Size of equipment image
+        //equipImage
+        equipText.text = "x" + equipUses.ToString();
+    }
+
+    public void RefillEquip()
+    {
+        equipUses = curEquipment.fills;
+        equipText.text = "x" + equipUses.ToString();
+        equipImage.sprite = curEquipment.sprite;
     }
 
     public void AddItem(Items item)
@@ -526,7 +709,7 @@ public class WeaponController : MonoBehaviour
             //rend.sprite = playerItems[0].sprite;
         }
         filledSlots++;
-        Debug.Log("Filled: " + filledSlots + "/nMax slots: " + maxSlots);
+        //Debug.Log("Filled: " + filledSlots + "\nMax slots: " + maxSlots);
     }
 
     public void SwitchItem(int slot)
@@ -547,7 +730,20 @@ public class WeaponController : MonoBehaviour
         dmgHigh = playerItems[curSlot].dmgHigh;
         reloading = false;
         shellCount = playerItems[curSlot].shellCount;
+        if (curWeapon == (int)Items.types.sniper)
+        {
+            laserSight.enabled = true;
+            sniper.dmgLow = dmgLow;
+            sniper.dmgHigh = dmgHigh;
+        }
+        else
+        {
+            laserSight.enabled = false;
+        }
+        //Set weapon sprite
         rend.sprite = playerItems[curSlot].sprite;
+        //Set flash location
+        spawns[0].transform.localPosition = new Vector2(rend.sprite.bounds.max.x, transform.localPosition.y);
     }
 
     void Reload(Items itemToReload)
@@ -573,11 +769,18 @@ public class WeaponController : MonoBehaviour
                 case ((int)Items.types.rpg):
                     rpgAmmo--;
                     break;
+                case ((int)Items.types.sniper):
+                    sniperAmmo--;
+                    break;
             }
+
+            //src.PlayOneShot(singleReload);
+
             if (hotbarSlotsAmmo[curSlot] == playerItems[curSlot].clipSize)
             {
                 reloading = false;
             }
+            else src.PlayOneShot(singleReload);
         }
         else
         {
@@ -585,53 +788,80 @@ public class WeaponController : MonoBehaviour
             {
                 case ((int)Items.types.pistol):
                     pistolAmmo -= (playerItems[curSlot].clipSize - hotbarSlotsAmmo[curSlot]);
+                    if (pistolAmmo <= 0) pistolAmmo = 0;
                     break;
                 case ((int)Items.types.machinegun):
                     machinegunAmmo -= (playerItems[curSlot].clipSize - hotbarSlotsAmmo[curSlot]);
+                    if (machinegunAmmo <= 0) machinegunAmmo = 0;
                     break;
                 case ((int)Items.types.shotgun):
                     shotgunAmmo -= (playerItems[curSlot].clipSize - hotbarSlotsAmmo[curSlot]);
+                    if (shotgunAmmo <= 0) shotgunAmmo = 0;
                     break;
                 case ((int)Items.types.flamethrower):
                     flamethrowerAmmo -= (playerItems[curSlot].clipSize - hotbarSlotsAmmo[curSlot]);
+                    if (flamethrowerAmmo <= 0) flamethrowerAmmo = 0;
                     break;
                 case ((int)Items.types.rpg):
                     rpgAmmo -= (playerItems[curSlot].clipSize - hotbarSlotsAmmo[curSlot]);
+                    if (rpgAmmo <= 0) rpgAmmo = 0;
+                    break;
+                case ((int)Items.types.sniper):
+                    sniperAmmo -= (playerItems[curSlot].clipSize - hotbarSlotsAmmo[curSlot]);
+                    if (sniperAmmo <= 0) sniperAmmo = 0;
                     break;
             }
+
+            //src.PlayOneShot(reloadClip);
+
             hotbarSlotsAmmo[curSlot] = playerItems[curSlot].clipSize;
             reloading = false;
         }
 
-        Debug.Log("Pistol ammo: " + pistolAmmo);
-        Debug.Log("Machinegun ammo: " + machinegunAmmo);
-        Debug.Log("Shotgun ammo: " + shotgunAmmo);
-        Debug.Log("Flamethrower ammo: " + flamethrowerAmmo);
-        Debug.Log("RPG ammo: " + rpgAmmo);
+        //Debug.Log("Pistol ammo: " + pistolAmmo);
+        //Debug.Log("Machinegun ammo: " + machinegunAmmo);
+        //Debug.Log("Shotgun ammo: " + shotgunAmmo);
+        //Debug.Log("Flamethrower ammo: " + flamethrowerAmmo);
+        //Debug.Log("RPG ammo: " + rpgAmmo);
     }
 
     void FirePistol()
     {
         float ran = Random.Range(-curAcc, curAcc);
         GameObject obj = GetBullet();
-        obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh);
+        obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh, dmgMod);
         obj.transform.position = spawns[0].transform.position;
         playerBod.AddForceAtPosition(-transform.right * force, transform.position);
         obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + ran);
         cools = cooldown;
         obj.SetActive(true);
+
+        //src.PlayOneShot(pistolShoot);
+
+        SetFlash();
+    }
+    
+    void SetFlash()
+    {
+        //Random rotation
+        flashObj.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+        //Play anim
+        flashObj.SetTrigger("Flash");
     }
 
     void FireSMG()
     {
         float ran = Random.Range(-curAcc, curAcc);
         GameObject obj = GetSMGBullet();
-        obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh);
+        obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh, dmgMod);
         obj.transform.position = spawns[0].transform.position;
         playerBod.AddForceAtPosition(-transform.right * force, transform.position);
         obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + ran);
         cools = cooldown;
         obj.SetActive(true);
+        src.PlayOneShot(mgShoot);
+
+        SetFlash();
     }
 
     public void FireSniper()
@@ -644,8 +874,27 @@ public class WeaponController : MonoBehaviour
         //reloadWheel.fillAmount = 0;
         sniper.StartLaserCoroutine();
         cools = cooldown;
-        sniper.laserCools = cooldown;
-        //src.PlayOneShot(sniperClip);
+
+        //sniper.laserCools = cooldown;
+
+        src.PlayOneShot(sniperShoot);
+
+        SetFlash();
+    }
+
+    void FireRocket()
+    {
+        float ran = Random.Range(-curAcc, curAcc);
+        GameObject obj = GetRocket();
+        //obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh, dmgMod);
+        obj.transform.position = spawns[0].transform.position;
+        playerBod.AddForceAtPosition(-transform.right * force, transform.position);
+        obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + ran);
+        cools = cooldown;
+        obj.SetActive(true);
+        //src.PlayOneShot(rpgShoot);
+
+        SetFlash();
     }
 
     //Default shotgun that I've always done
@@ -674,13 +923,25 @@ public class WeaponController : MonoBehaviour
         for (int i = 0; i < shellCount; i++)
         {
             GameObject obj = GetShot();
-            obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh);
+            obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh, dmgMod);
             obj.transform.position = (Vector2)spawns[0].transform.position + Random.insideUnitCircle * curAcc * (0.035f + Random.Range(-0.035f, 0.035f));
             playerBod.AddForceAtPosition(-transform.right * force, transform.position);
             obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + (i * curAcc) - curAcc);
-            cools = cooldown;
             obj.SetActive(true);
         }
+        //Play audio clip for weapon
+        src.PlayOneShot(shotgunShoot);
+        if (playerItems[curSlot].cocks) Invoke("PlayShotgunClick", shotgunShoot.length - 0.1f);
+        cools = sgClick.length + 0.025f;
+        //Set muzzle flash animation/sprite
+        SetFlash();
+        //Set cooldown
+        cools = cooldown;
+    }
+
+    void PlayShotgunClick()
+    {
+        src.PlayOneShot(sgClick);
     }
 
     void FireFlamethrower()

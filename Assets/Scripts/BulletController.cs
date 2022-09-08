@@ -44,9 +44,10 @@ public class BulletController : MonoBehaviour
         CancelInvoke();
     }
 
-    public void SetDamage(float low, float high)
+    public void SetDamage(float low, float high, float mod)
     {
-        atk = Mathf.RoundToInt(Random.Range(low, high));
+        float a = Random.Range(low, high);
+        atk = Mathf.RoundToInt(a + (a * mod));
     }
 
     void Disable()
@@ -58,7 +59,7 @@ public class BulletController : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         { 
-            collision.GetComponent<IDamageable<float>>().Damage(atk);
+            collision.GetComponent<EnemyController>().Damage(atk);
             collision.attachedRigidbody.AddForce(transform.up * knockback);
             if (!piercing)
             {

@@ -7,6 +7,8 @@ public class BodyController : MonoBehaviour
     public float life = 10f;
     float lifeLeft = 0f;
     SpriteRenderer rend;
+    public ParticleSystem parts;
+    public int partsToEmit;
 
     private void Awake()
     {
@@ -15,6 +17,9 @@ public class BodyController : MonoBehaviour
 
     private void OnEnable()
     {
+        //Throw particles
+        parts.Emit(partsToEmit);
+        //Disable after certain amount of time
         lifeLeft = life;
         rend.flipX = (Random.value > 0.5f) ? true : false;
     }

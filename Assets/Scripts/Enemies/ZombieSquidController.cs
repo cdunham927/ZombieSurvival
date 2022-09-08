@@ -11,8 +11,10 @@ public class ZombieSquidController : EnemyController, IDamageable<float>, IKilla
     float cools = 0f;
     float distanceToTarget;
 
-    private void OnEnable()
+    public override void OnEnable()
     {
+        base.OnEnable();
+
         startPos = transform.position;
         hp = maxHp;
     }

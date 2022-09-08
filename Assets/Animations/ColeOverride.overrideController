@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ColeOverride
+  m_Controller: {fileID: 9100000, guid: af91f55589b33894280b8758f79879cd, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: e786d2c8086863842a5235ee22a1305b, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: e73676ee5af904e4489a61fe4eb05547, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 1877298adf59d88459b5f7e126ef2b41, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 14986a76c5147f143bb05659aa53afbe, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: ea49cf44876bc83448b2c68a83e0b994, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: ea49cf44876bc83448b2c68a83e0b994, type: 2}

@@ -43,8 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f774073aa272d2e4aa1376bfecf57224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: 
+  itemDescription: 
+  cost: 0
   id: 0
-  weaponName: Colt
   dmgLow: 3
   dmgHigh: 4
   sprite: {fileID: 9083407258458956384, guid: c0807a95ea783b74fa46a6b2e3b2f4ef, type: 3}
@@ -54,12 +56,12 @@ MonoBehaviour:
   cooldown: 0.15
   spreadLow: 3
   spreadHigh: 8
-  cost: 0
   ammoCost: 0
   knockback: 5
   craftingMaterials: []
   clipSize: 12
-  ammoImage: {fileID: 21300000, guid: bf30922d987224d4c8342e8a5cc03e5c, type: 3}
+  ammoImage: {fileID: 8431077131804139943, guid: 2fdd66a6f196eae479241653c9214d8e,
+    type: 3}
   reloadTime: 1.25
   singleReload: 0
   shellCount: 0

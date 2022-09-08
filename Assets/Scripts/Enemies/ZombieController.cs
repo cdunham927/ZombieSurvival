@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ZombieController : EnemyController, IDamageable<float>, IKillable
+public class ZombieController : EnemyController
 {
     Animator anim;
     //public GameObject bullet;
     float cools = 0f;
 
-    private void OnEnable()
+    public override void OnEnable()
     {
+        base.OnEnable();
+
         hp = maxHp;
         int animToPick = Random.Range(0, 2);
     }
@@ -47,7 +49,15 @@ public class ZombieController : EnemyController, IDamageable<float>, IKillable
         //Debug.DrawLine(transform.position, transform.position * Vector2.right * attackRange);
     }
 
-    public void Damage(float damage)
+    void Update()
+    {
+        if (Application.isEditor && Input.GetKeyDown(KeyCode.N))
+        {
+            Damage(999);
+        }
+    }
+
+    public override void Damage(float damage)
     {
         hp -= damage;
 
@@ -60,10 +70,33 @@ public class ZombieController : EnemyController, IDamageable<float>, IKillable
         {
             Die();
         }
+
+        dmgParts.Emit(dmgPartsAmt);
+        CheckHpAnim();
     }
 
-    public void Die()
+    public override void Die()
     {
+        //If we roll good enough, drop an item for the player
+        float chance = Random.value;
+
+        if (chance < moneyDropChance)
+        {
+            Instantiate(moneyDrop, transform.position + new Vector3(Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f)), Quaternion.identity);
+        }
+        else if (chance < healthDropChance)
+        {
+            Instantiate(healthDrop, transform.position + new Vector3(Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f)), Quaternion.identity);
+        }
+        else if (chance < allAmmoDropChance)
+        {
+            Instantiate(allAmmoDrop, transform.position + new Vector3(Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f)), Quaternion.identity);
+        }
+        else if (chance < ammoDropChance)
+        {
+            //Instantiate(ammoDrop[Random.Range(0, ammoDrop.Length)], transform.position + new Vector3(Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f)), Quaternion.identity);
+        }
+
         Instantiate(deadSquid, transform.position, Quaternion.identity);
         //Object pool this later
         Invoke("Disable", 0.001f);

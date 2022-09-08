@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
 {
     //Singleton behavior for player
+    GameController cont;
     public static PlayerController player;
     PlayerExtraStats extraStats;
 
@@ -40,14 +42,43 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     float RMB;
 
     //Stat modifiers
-    public float speedMod;
+    float speedMod;
 
     //Damage
     float iframes;
-    float iframeTime = 0.25f;
+    [Range(0, 1f)]
+    public float iframeTime = 0.25f;
+
+    Animator anim;
+
+    public ScriptableFloat curMagnet;
+    public ScriptableFloat badMagnet;
+    public ScriptableFloat goodMagnet;
+
+    public ScriptableFloat scriptSpd;
+    float spdMod;
+    public float magnetCooldownTime;
+    float magnetCooldown;
+    public float coffeeCooldownTime;
+    float coffeeCooldown;
+
+    //Player can't move or shoot whilst in menus
+    public bool canMove = true;
+
+    public SpriteRenderer bloodRend;
+    public Sprite[] bloodSprites;
+
+    public ParticleSystem dmgParts;
+    public int dmgPartsAmt = 5;
+
+    public ParticleSystem healParts;
+    public int healNums = 5;
 
     private void Awake()
     {
+        cont = FindObjectOfType<GameController>();
+        anim = GetComponent<Animator>();
+
         if (player == null)
             player = this;
         else if (player != this)
@@ -69,10 +100,65 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
         curStam = maxStam;
 
         money = extraStats.startMoney;
+
+        if (Application.isEditor)
+        {
+            money = 9999;
+        }
+    }
+
+    public void SetCoffee()
+    {
+        coffeeCooldown = coffeeCooldownTime;
+    }
+
+    public void SetMagnet()
+    {
+        magnetCooldown = magnetCooldownTime;
+    }
+
+    public void AddMoney(float amt)
+    {
+        money += amt;
+    }
+
+    public float GetHealth()
+    {
+        return curHp;
+    }
+
+    public void InMenu()
+    {
+        canMove = false;
+    }
+
+    public void ExitMenu()
+    {
+        canMove = true;
     }
 
     private void Update()
     {
+        if (coffeeCooldown > 0)
+        {
+            spdMod = scriptSpd.val;
+            coffeeCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            spdMod = 0;
+        }
+
+        if (magnetCooldown > 0)
+        {
+            curMagnet.val = goodMagnet.val;
+            magnetCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            curMagnet.val = badMagnet.val;
+        }
+
         //bool myBool = Mathf.Approximately(RMB, 1);
         bool myBool = Input.GetButton("RMB");
         //bool myRunBool = Mathf.Approximately(run, 1);
@@ -83,8 +169,8 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
         move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         //Move if any move buttons are pressed
-        if (move.x != 0) bod.AddForce(Vector2.right * curSpd * move.x * Time.deltaTime);
-        if (move.y != 0) bod.AddForce(Vector2.up * curSpd * move.y * Time.deltaTime);
+        if (move.x != 0 && canMove) bod.AddForce(Vector2.right * (curSpd + (curSpd * spdMod)) * move.x * Time.deltaTime);
+        if (move.y != 0 && canMove) bod.AddForce(Vector2.up * (curSpd + (curSpd * spdMod)) * move.y * Time.deltaTime);
 
         //Sprinting
         if (myRunBool && curStam > 0 && (move.x != 0 || move.y != 0))
@@ -135,6 +221,9 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
             }
         }
 
+        //anim.SetFloat("moveX", bod.velocity.x);
+        //anim.SetFloat("moveY", bod.velocity.y);
+
         if (iframes > 0) iframes -= Time.deltaTime;
     }
 
@@ -146,26 +235,64 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
         curHp = maxHp;
     }
 
+    public void Heal(float amt)
+    {
+        if (curHp + amt > maxHp) curHp = maxHp;
+        else curHp += amt;
+
+        healParts.Emit(healNums);
+
+        CheckHpAnim();
+    }
+
     void hpToRed()
     {
         hpImg.color = Color.red;
     }
 
+    void CheckHpAnim()
+    {
+        if (curHp < (maxHp / 3))
+        {
+            bloodRend.sprite = bloodSprites[2];
+        }
+        else if (curHp < (2 * maxHp / 3))
+        {
+            bloodRend.sprite = bloodSprites[1];
+        }
+        else
+        {
+            bloodRend.sprite = bloodSprites[0];
+        }
+    }
+
     public void Damage(float amt)
     {
-        if (iframes <= 0)
+        if (iframes <= 0 && curHp > 0)
         {
+            anim.SetTrigger("Hurt");
             hpImg.color = Color.white;
             Invoke("hpToRed", 0.05f);
             curHp -= amt;
             iframes = iframeTime;
             //Debug.Log("Hp = " + curHp);
+
+            dmgParts.Emit(dmgPartsAmt);
+            CheckHpAnim();
         }
+
+        if (curHp <= 0) Die();
     }
 
     public void Die()
     {
+        //Disable... collider for player?
+        Collider2D col = GetComponent<Collider2D>();
+        col.enabled = true;
 
+        anim.SetTrigger("Death");
+
+        cont.GameOver();
     }
 }
 

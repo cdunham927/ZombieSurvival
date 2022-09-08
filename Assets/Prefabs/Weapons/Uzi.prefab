@@ -43,8 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f774073aa272d2e4aa1376bfecf57224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemName: 
+  itemDescription: 
+  cost: 100
   id: 15
-  weaponName: Uzi
   dmgLow: 2
   dmgHigh: 3
   sprite: {fileID: -2286773427665652759, guid: c0807a95ea783b74fa46a6b2e3b2f4ef, type: 3}
@@ -54,12 +56,12 @@ MonoBehaviour:
   cooldown: 0.05
   spreadLow: 5
   spreadHigh: 15
-  cost: 100
   ammoCost: 0
   knockback: 3
   craftingMaterials: []
   clipSize: 32
-  ammoImage: {fileID: 21300000, guid: bf30922d987224d4c8342e8a5cc03e5c, type: 3}
+  ammoImage: {fileID: -7546666057665567261, guid: 2fdd66a6f196eae479241653c9214d8e,
+    type: 3}
   reloadTime: 1.75
   singleReload: 0
   shellCount: 0
