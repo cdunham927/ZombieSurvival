@@ -8,6 +8,7 @@ public class BarbedWireEquipment : Equipment
 
     public override void UseItem()
     {
+        base.UseItem();
         PlayerController pl = FindObjectOfType<PlayerController>();
 
         GameObject b = Instantiate(barbedWire, pl.transform.position, Quaternion.identity);

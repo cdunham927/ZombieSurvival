@@ -18,12 +18,18 @@ public class Equipment : Buyable
     //For buying
     public TextMeshProUGUI buyText;
     protected WeaponController weapons;
+    PlayerController player;
 
     public float refillCost;
     public int fills;
 
+    public AudioClip clip;
+    [Range(0, 1)]
+    public float vol = 0.4f;
+
     private void Awake()
     {
+        player = FindObjectOfType<PlayerController>();
         weapons = FindObjectOfType<WeaponController>();
         buyText = GetComponentInChildren<TextMeshProUGUI>();
         pos = transform.position;
@@ -32,7 +38,10 @@ public class Equipment : Buyable
         sinFrequency = Random.Range(0.75f, 1.25f);
     }
 
-    public virtual void UseItem() { }
+    public virtual void UseItem()
+    {
+        if (clip != null) FindObjectOfType<GameController>().PlaySound(clip, vol);
+    }
 
     void Update()
     {
@@ -46,32 +55,32 @@ public class Equipment : Buyable
             //show buytext
             if (!weapons.hasEquipment(this))
             {
-                if (PlayerController.player.money > cost) buyText.text = "<color=white>" + itemName + " - </color>" + "<color=yellow> $" + cost.ToString() + "</color>\n";
+                if (player.money > cost) buyText.text = "<color=white>" + itemName + " - </color>" + "<color=yellow> $" + cost.ToString() + "</color>\n";
                 else buyText.text = "<color=white>" + itemName + " - </color>" + "<color=red> $" + cost.ToString() + "</color>\n";
             }
             //Player has weapon, they can buy ammo
             //show buytext
             else
             {
-                if (PlayerController.player.money > refillCost) buyText.text = "<color=white>" + itemName + " ammo - </color>" + "<color=yellow> $" + cost.ToString() + "</color>\n";
+                if (player.money > refillCost) buyText.text = "<color=white>" + itemName + " ammo - </color>" + "<color=yellow> $" + cost.ToString() + "</color>\n";
                 else buyText.text = "<color=white>" + itemName + " ammo - </color>" + "<color=red> $" + refillCost.ToString() + "</color>\n";
             }
 
-            if (PlayerController.player.money > cost && Input.GetKeyDown(KeyCode.E))
+            if (player.money > cost && Input.GetKeyDown(KeyCode.E))
             {
                 //Buy weapon
                 if (!weapons.hasEquipment(this))
                 {
-                    PlayerController.player.money -= cost;
+                    player.money -= cost;
                     weapons.SwitchEquipment(this);
-                    weapons.RefillEquip();
+                    weapons.RefillEquipment();
                     //gameObject.SetActive(false);
                 }
                 //Buy ammo
                 else
                 {
-                    PlayerController.player.money -= refillCost;
-                    weapons.RefillEquip();
+                    player.money -= refillCost;
+                    weapons.RefillEquipment();
                     //gameObject.SetActive(false);
                 }
             }

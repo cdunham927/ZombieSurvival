@@ -49,14 +49,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Colt Detective
-  itemDescription: 
-  cost: 25
-  id: 1
-  dmgLow: 14
-  dmgHigh: 20
+  itemDescription: Light, versatile pistol.
+  cost: 150
   sprite: {fileID: 3402680606838860064, guid: cf9d5d76d08617748aaef57671ee14e3, type: 3}
   spriteWidth: 28
   spriteHeight: 19
+  id: 1
+  dmgLow: 14
+  dmgHigh: 20
   thisType: 0
   cooldown: 0.75
   spreadLow: 1.25
@@ -73,6 +73,7 @@ MonoBehaviour:
   sinAmplitude: 0.1
   sinFrequency: 1
   buyText: {fileID: 0}
+  cocks: 0
 --- !u!212 &7198494873576329381
 SpriteRenderer:
   m_ObjectHideFlags: 0

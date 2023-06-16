@@ -8,8 +8,8 @@ public class MineEquipment : Equipment
 
     public override void UseItem()
     {
+        base.UseItem();
         PlayerController pl = FindObjectOfType<PlayerController>();
-
         GameObject b = Instantiate(mine, pl.transform.position, Quaternion.identity);
     }
 }

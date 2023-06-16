@@ -102,7 +102,9 @@ MonoBehaviour:
   spd: {fileID: 11400000, guid: a7166916fa59ad14ab4617d3e54293e9, type: 2}
   timeToDisable: {fileID: 11400000, guid: efa3a26823d780445878165d953cd91e, type: 2}
   canPickup: 1
-  amtToAdd: 50
+  pickupClip: {fileID: 8300000, guid: 82c882b2347bbaf43b154fffa2a31ee2, type: 3}
+  sndVolume: 0.911
+  amtToAdd: 100
 --- !u!61 &1050547344804015652
 BoxCollider2D:
   m_ObjectHideFlags: 0

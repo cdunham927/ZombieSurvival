@@ -10,7 +10,7 @@ public class WeaponController : MonoBehaviour
     int curWeapon;
 
     //Animation
-    SpriteRenderer rend;
+    public SpriteRenderer rend;
     public Rigidbody2D playerBod;
     //recoil for player
     public float force;
@@ -52,11 +52,11 @@ public class WeaponController : MonoBehaviour
 
     //Player actions/Input
     PlayerController player;
-    PlayerActions playerActions;
-    float shot;
-    float aim;
-    float run;
-    float mouseScroll;
+    //PlayerActions playerActions;
+    //float shot;
+    //float aim;
+    //float run;
+    //float mouseScroll;
 
     //Shooting
     float cools = 0f;
@@ -155,15 +155,18 @@ public class WeaponController : MonoBehaviour
     public Image equipImage;
     public TMP_Text equipText;
 
+    Camera cam;
+
     private void Awake()
     {
+        cam = Camera.main;
         player = FindObjectOfType<PlayerController>();
-        playerActions = new PlayerActions();
-        playerActions.PlayerControls.Aim.performed += ctx => mousePos = ctx.ReadValue<Vector2>();
-        playerActions.PlayerControls.Shoot.performed += ctx => shot = ctx.ReadValue<float>();
-        playerActions.PlayerControls.RMB.performed += ctx => aim = ctx.ReadValue<float>();
-        playerActions.PlayerControls.Run.performed += ctx => run = ctx.ReadValue<float>();
-        playerActions.PlayerControls.MouseScroll.performed += ctx => mouseScroll = ctx.ReadValue<float>();
+        //playerActions = new PlayerActions();
+        //playerActions.PlayerControls.Aim.performed += ctx => mousePos = ctx.ReadValue<Vector2>();
+        //playerActions.PlayerControls.Shoot.performed += ctx => shot = ctx.ReadValue<float>();
+        //playerActions.PlayerControls.RMB.performed += ctx => aim = ctx.ReadValue<float>();
+        //playerActions.PlayerControls.Run.performed += ctx => run = ctx.ReadValue<float>();
+        //playerActions.PlayerControls.MouseScroll.performed += ctx => mouseScroll = ctx.ReadValue<float>();
 
         hotbarSlotsAmmo = new int[5];
 
@@ -173,7 +176,7 @@ public class WeaponController : MonoBehaviour
         curAcc = accuracyMid;
 
         src = GetComponent<AudioSource>();
-        rend = GetComponent<SpriteRenderer>();
+        //rend = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
 
         bulList = new List<GameObject>();
@@ -188,7 +191,7 @@ public class WeaponController : MonoBehaviour
 
         FillAmmo();
 
-        if (curEquipment != null) RefillEquip();
+        if (curEquipment != null) RefillEquipment();
 
         laserSight.enabled = false;
     }
@@ -326,7 +329,12 @@ public class WeaponController : MonoBehaviour
 
     private void Update()
     {
-        bool myBool = Mathf.Approximately(aim, 1);
+        //Aim at mouse
+        Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 direction = (mousePos - (Vector2)transform.position).normalized;
+        transform.right = direction;
+
+        //bool myBool = Mathf.Approximately(aim, 1);
 
         if (zombarCooldown > 0)
         {
@@ -365,7 +373,6 @@ public class WeaponController : MonoBehaviour
                     case ((int)Items.types.rpg):
                         FireRocket();
                         break;
-                        break;
                     case ((int)Items.types.sniper):
                         FireSniper();
                         break;
@@ -401,7 +408,7 @@ public class WeaponController : MonoBehaviour
             equipText.text = "x" + equipUses.ToString();
         }
 
-        if (Input.GetMouseButtonUp(0) && curWeapon == (int)Items.types.flamethrower)
+        if (Input.GetButtonUp("Fire1") && curWeapon == (int)Items.types.flamethrower)
         {
             flames.enabled = false;
             flameTrigger.enabled = false;
@@ -409,12 +416,12 @@ public class WeaponController : MonoBehaviour
 
         //anim.SetInteger("curWeapon", weaponId);
 
-        if (run > 0.1f && player.curStam > 0)
+        if (Input.GetButton("Run") && player.curStam > 0)
         {
             //Running
             curAcc = Mathf.Lerp(curAcc, accuracyHigh, aimLerp * Time.deltaTime);
         }
-        else if (myBool)
+        else if (Input.GetButton("Aim"))
         {
             curAcc = Mathf.Lerp(curAcc, accuracyLow, aimLerp * Time.deltaTime);
         }
@@ -425,7 +432,7 @@ public class WeaponController : MonoBehaviour
         }
 
         //Switching weapons with the hotbar
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetButtonDown("Switch"))
         {
             if (curSlot > 0)
             {
@@ -443,7 +450,7 @@ public class WeaponController : MonoBehaviour
         }
 
         //Reloading
-        if (Input.GetKeyDown(KeyCode.R) && hotbarSlotsAmmo[curSlot] < playerItems[curSlot].clipSize && !reloading && canReload)
+        if (Input.GetButtonDown("Reload") && hotbarSlotsAmmo[curSlot] < playerItems[curSlot].clipSize && !reloading && canReload)
         {
             reloadHotbar[curSlot].fillAmount = 0f;
             
@@ -552,8 +559,8 @@ public class WeaponController : MonoBehaviour
     private void LateUpdate()
     {
         //Sprite position
-        //Vector3 mousePos = Camera.main.ScreenToViewportPoint(mousePosition);
-        lookPos = Camera.main.ScreenToViewportPoint(mousePos);
+        //Vector3 mousePos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        lookPos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
         //Show weapon in front of or behind player
         rend.sortingOrder = (lookPos.y < 0.5f) ? 3 : 1;
         rend.flipY = (lookPos.x < 0.5f) ? true : false;
@@ -563,11 +570,11 @@ public class WeaponController : MonoBehaviour
 
         //Look at mouse
         //Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-        Vector3 dir = mousePos - Camera.main.WorldToScreenPoint(transform.position);
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * lerpSpd);
+        //Vector3 dir = mousePos - Camera.main.WorldToScreenPoint(transform.position);
+        //float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.AngleAxis(angle, Vector3.forward), Time.deltaTime * lerpSpd);
 
-        Vector3 newMousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        Vector3 newMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         reticle.transform.position = new Vector3(newMousePos.x, newMousePos.y, 0);
         clamp = curAcc / 2.5f;
         clamp = Mathf.Clamp(clamp, 1f, 2.5f);
@@ -665,7 +672,7 @@ public class WeaponController : MonoBehaviour
     public void SwitchEquipment(Equipment it)
     {
         curEquipment = it;
-        RefillEquip();
+        RefillEquipment();
 
         //Gotta change the ui and count here too
         equipImage.sprite = it.sprite;
@@ -674,7 +681,7 @@ public class WeaponController : MonoBehaviour
         equipText.text = "x" + equipUses.ToString();
     }
 
-    public void RefillEquip()
+    public void RefillEquipment()
     {
         equipUses = curEquipment.fills;
         equipText.text = "x" + equipUses.ToString();
@@ -836,7 +843,7 @@ public class WeaponController : MonoBehaviour
         cools = cooldown;
         obj.SetActive(true);
 
-        //src.PlayOneShot(pistolShoot);
+        src.PlayOneShot(pistolShoot);
 
         SetFlash();
     }
@@ -892,7 +899,7 @@ public class WeaponController : MonoBehaviour
         obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + ran);
         cools = cooldown;
         obj.SetActive(true);
-        //src.PlayOneShot(rpgShoot);
+        src.PlayOneShot(rpgShoot);
 
         SetFlash();
     }
@@ -948,15 +955,5 @@ public class WeaponController : MonoBehaviour
     {
         flames.enabled = true;
         flameTrigger.enabled = true;
-    }
-
-    private void OnEnable()
-    {
-        playerActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        playerActions.Disable();
     }
 }

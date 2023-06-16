@@ -17,9 +17,10 @@ public class LasersightController : MonoBehaviour
 
     Ray2D hitRay;
 
-    private void FixedUpdate()
+    private void Update()
     {
         line.SetPosition(0, transform.position);
+        line.SetPosition(1, transform.position + (weapon.transform.right * maxLength * 10f));
         //line.SetPosition(1, transform.position + (weapon.transform.right * maxLength));
 
         //Enable laser
@@ -30,8 +31,8 @@ public class LasersightController : MonoBehaviour
 
         if (hit.collider != null)
         {
-            if (hit.collider.CompareTag("Wall"))
-                line.SetPosition(1, hit.point);
+            //if (hit.collider.CompareTag("Wall"))
+            //    line.SetPosition(1, hit.point);
         }
     }
 }

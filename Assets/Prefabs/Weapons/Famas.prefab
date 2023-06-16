@@ -283,15 +283,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Famas
-  itemDescription: A reasonably accurate machine gun with a fast fire rate and decent
+  itemDescription: Reasonably accurate machine gun with a fast fire rate and decent
     clip size.
-  cost: 250
-  id: 17
-  dmgLow: 7
-  dmgHigh: 11
+  cost: 600
   sprite: {fileID: 1360066031642413623, guid: 1ff67074351ee5645b9221584903dfde, type: 3}
   spriteWidth: 56
   spriteHeight: 19
+  id: 17
+  dmgLow: 7
+  dmgHigh: 11
   thisType: 2
   cooldown: 0.115
   spreadLow: 5
@@ -308,6 +308,7 @@ MonoBehaviour:
   sinAmplitude: 0.1
   sinFrequency: 1
   buyText: {fileID: 0}
+  cocks: 0
 --- !u!212 &1500518123095835852
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -355,7 +356,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.29, y: 0.21}
+  m_Size: {x: 0.56, y: 0.19}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -393,7 +394,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.56, y: 0.19}
-    newSize: {x: 0.29, y: 0.21}
+    newSize: {x: 0.56, y: 0.19}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

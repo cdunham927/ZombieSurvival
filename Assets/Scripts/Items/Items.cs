@@ -38,11 +38,13 @@ public class Items : Buyable
     //For buying
     public TextMeshProUGUI buyText;
     WeaponController weapons;
+    PlayerController player;
 
     public bool cocks = false;
 
     private void Awake()
     {
+        player = FindObjectOfType<PlayerController>();
         weapons = FindObjectOfType<WeaponController>();
         buyText = GetComponentInChildren<TextMeshProUGUI>();
         pos = transform.position;
@@ -63,30 +65,30 @@ public class Items : Buyable
             //show buytext
             if (!weapons.hasWeapon(this))
             {
-                if (PlayerController.player.money > cost) buyText.text = "<color=white>" + itemName + " - </color>" + "<color=yellow> $" + cost.ToString() + "</color>\n";
+                if (player.money > cost) buyText.text = "<color=white>" + itemName + " - </color>" + "<color=yellow> $" + cost.ToString() + "</color>\n";
                 else buyText.text = "<color=white>" + itemName + " - </color>" + "<color=red> $" + cost.ToString() + "</color>\n";
             }
             //Player has weapon, they can buy ammo
             //show buytext
             else
             {
-                if (PlayerController.player.money > ammoCost) buyText.text = "<color=white>" + itemName + " ammo - </color>" + "<color=yellow> $" + cost.ToString() + "</color>\n";
+                if (player.money > ammoCost) buyText.text = "<color=white>" + itemName + " ammo - </color>" + "<color=yellow> $" + cost.ToString() + "</color>\n";
                 else buyText.text = "<color=white>" + itemName + " ammo - </color>" + "<color=red> $" + ammoCost.ToString() + "</color>\n";
             }
 
-            if (PlayerController.player.money > cost && Input.GetKeyDown(KeyCode.E))
+            if (player.money > cost && Input.GetKeyDown(KeyCode.E))
             {
                 //Buy weapon
                 if (!weapons.hasWeapon(this))
                 {
-                    PlayerController.player.money -= cost;
+                    player.money -= cost;
                     weapons.AddItem(this);
                     //gameObject.SetActive(false);
                 }
                 //Buy ammo
                 else
                 {
-                    PlayerController.player.money -= ammoCost;
+                    player.money -= ammoCost;
                     weapons.RefillAmmo(thisType);
                     //gameObject.SetActive(false);
                 }

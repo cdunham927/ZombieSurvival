@@ -50,13 +50,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: AUG
   itemDescription: Hefty assault rifle that boasts damage and clip size over accuracy.
-  cost: 300
-  id: 16
-  dmgLow: 6
-  dmgHigh: 11
+  cost: 700
   sprite: {fileID: 5442606424355409708, guid: 19ae37cb572300f4488ec9dff015c85b, type: 3}
   spriteWidth: 59
   spriteHeight: 20
+  id: 16
+  dmgLow: 6
+  dmgHigh: 11
   thisType: 2
   cooldown: 0.15
   spreadLow: 7
@@ -73,6 +73,7 @@ MonoBehaviour:
   sinAmplitude: 0.1
   sinFrequency: 1
   buyText: {fileID: 0}
+  cocks: 0
 --- !u!212 &6179406386311748386
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -120,7 +121,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.29, y: 0.21}
+  m_Size: {x: 0.59, y: 0.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -158,7 +159,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.59, y: 0.2}
-    newSize: {x: 0.29, y: 0.21}
+    newSize: {x: 0.59, y: 0.2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

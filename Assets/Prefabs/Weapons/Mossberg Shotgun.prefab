@@ -49,14 +49,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Mossberg
-  itemDescription: 
-  cost: 50
-  id: 13
-  dmgLow: 3
-  dmgHigh: 8
+  itemDescription: Pump-action shotgun with good stopping power and decent spread.
+  cost: 350
   sprite: {fileID: 217500027190908571, guid: 07f2b601603e758408b7bcbc2c9a2d18, type: 3}
   spriteWidth: 57
   spriteHeight: 11
+  id: 13
+  dmgLow: 3
+  dmgHigh: 8
   thisType: 1
   cooldown: 0.6
   spreadLow: 2

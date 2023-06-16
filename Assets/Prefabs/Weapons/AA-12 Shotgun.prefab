@@ -283,14 +283,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: AA-12
-  itemDescription: Pump-action shotgun with good stopping power and decent spread.
+  itemDescription: Fully automatic shotgun with a large clip.
   cost: 400
-  id: 12
-  dmgLow: 1
-  dmgHigh: 5
   sprite: {fileID: 4162525685747737517, guid: be63db2c88b2d3a4ca89121091553170, type: 3}
   spriteWidth: 56
   spriteHeight: 18
+  id: 12
+  dmgLow: 1
+  dmgHigh: 5
   thisType: 1
   cooldown: 0.1
   spreadLow: 3
@@ -307,6 +307,7 @@ MonoBehaviour:
   sinAmplitude: 0
   sinFrequency: 0
   buyText: {fileID: 0}
+  cocks: 0
 --- !u!212 &3805489343138599137
 SpriteRenderer:
   m_ObjectHideFlags: 0

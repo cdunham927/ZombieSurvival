@@ -7,6 +7,10 @@ TagManager:
   - Enemy
   - Wall
   - Wire
+  - GameOver
+  - WaveTimer
+  - WaveText
+  - ZombieText
   layers:
   - Default
   - TransparentFX

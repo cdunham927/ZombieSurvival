@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class ItemList : MonoBehaviour
 {
+    public GameObject shopParent;
     //public List<Items> weaponList;
     WeaponController weapons;
     PlayerController player;
-    public int numWeap = 0;
 
     //New weapon list
     public ScriptableItemList iList;
@@ -33,10 +34,23 @@ public class ItemList : MonoBehaviour
 
     public Text nextShopText;
 
+    EventSystem ev;
+    public Button exitButton;
+
     //We can probably set it up later so the shop is
     //sorted based on how expensive the items are
     //Weapons go at the top of the shop
     //While Equipment goes at the bottom
+
+    private void Awake()
+    {
+        player = FindObjectOfType<PlayerController>();
+        weapons = FindObjectOfType<WeaponController>();
+
+        ev = FindObjectOfType<EventSystem>();
+
+        SetupShopInitial();
+    }
 
     void CopyList(List<Buyable> fromList, List<Buyable> toList)
     {
@@ -74,8 +88,25 @@ public class ItemList : MonoBehaviour
 
         //Set timer
         remainingShopTime = timeBetweenShopRotations;
+
+        //Set exit button to be at the bottom of the store list
+        //Set up button functionality
+        exitButton.onClick.AddListener(delegate { ExitStore(); });
+        exitButton.transform.SetParent(null);
+        exitButton.transform.SetParent(shopListParent.transform);
     }
-    
+
+    public void ExitStore()
+    {
+        //UI stuff(for controller support)
+        ev.SetSelectedGameObject(null);
+        //Close store UI
+        shopParent.SetActive(false);
+        //Player can't move or shoot whilst in a menu
+        player.ExitMenu();
+        weapons.ExitMenu();
+    }
+
     public void PopulateShop()
     {
         //Old shop setup
@@ -110,6 +141,10 @@ public class ItemList : MonoBehaviour
 
         //Set timer
         remainingShopTime = timeBetweenShopRotations;
+
+        //Set exit button to be at the bottom of the store list
+        exitButton.transform.SetParent(null);
+        exitButton.transform.SetParent(shopListParent.transform);
     }
 
     void ReplaceItem(ShopItem sh, Buyable nI)
@@ -156,18 +191,8 @@ public class ItemList : MonoBehaviour
         curShopList.Add(shop);
     }
 
-    private void Awake()
-    {
-        weapons = FindObjectOfType<WeaponController>();
-        player = FindObjectOfType<PlayerController>();
-
-        SetupShopInitial();
-    }
-
     private void Update()
     {
-
-
         if (remainingShopTime > 0)
         {
             remainingShopTime -= Time.deltaTime;

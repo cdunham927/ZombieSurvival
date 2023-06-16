@@ -48,9 +48,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f774073aa272d2e4aa1376bfecf57224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: RPG
-  itemDescription: 
-  cost: 750
+  itemName: Rocket Launcher
+  itemDescription: Launches an unguided, rocket-propelled projectile.
+  cost: 800
   sprite: {fileID: -8138264534235535264, guid: 858de19f816db75469ce1cc9ea6e20f4, type: 3}
   spriteWidth: 52
   spriteHeight: 20

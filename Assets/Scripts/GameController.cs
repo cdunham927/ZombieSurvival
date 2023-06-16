@@ -4,10 +4,11 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public static GameController cont;
+    //public static GameController cont;
     public GameObject shopMenu;
     public bool inMenu;
     //Waves
@@ -22,6 +23,7 @@ public class GameController : MonoBehaviour
     float curEnemies;
     public float timeBetweenWaves = 10f;
     float nextWaveCools;
+    public float firstWaveCountdown = 3f;
     float cools;
     public float timeBetweenSpawnsLow;
     public float timeBetweenSpawnsHigh;
@@ -59,14 +61,27 @@ public class GameController : MonoBehaviour
 
     public AudioSource soundSrc;
 
+    public GameObject gameOverMenu;
+    public GameObject gcUI;
+
+    //Spawn within a box;
+    public Vector2 boxSpawns;
+
     private void Awake()
     {
-        if (cont == null)
-        {
-            cont = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else Destroy(gameObject);
+        nextWaveCools = firstWaveCountdown;
+
+        //if (cont == null)
+        //{
+        //    cont = this;
+        //    gameOverMenu = GameObject.FindGameObjectWithTag("GameOver");
+        //    gameOverMenu.SetActive(false);
+        //    DontDestroyOnLoad(gameObject);
+        //}
+        //else Destroy(gameObject);
+
+        //gameOverMenu = GameObject.FindGameObjectWithTag("GameOver");
+        //gameOverMenu.SetActive(false);
 
         //Start wave
         enemiesSpawned = 0;
@@ -137,7 +152,7 @@ public class GameController : MonoBehaviour
         //Loop and get random enemies until we have enough for the wave
         while (sco < enemiesToSpawn)
         {
-            GameObject o = Instantiate(enemy[0]);
+            GameObject o = Instantiate(enemy[Random.Range(0, enemy.Length)]);
             EnemyController e = o.GetComponent<EnemyController>();
             o.SetActive(false);
             sco += e.spawnScore;
@@ -178,144 +193,204 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        float minutes = Mathf.Floor(nextWaveCools / 60);
-        float seconds = Mathf.RoundToInt(nextWaveCools % 60);
-        float milli = Mathf.RoundToInt((nextWaveCools * 100) % 100);
-        //waveTimerText.text = "Next Wave - " + minutes.ToString() + ":" + seconds.ToString() + ":" + milli.ToString();
-
-        if (nextWaveCools > 0)
+        if (waveTimerParent == null)
         {
-            waveTimerParent.SetActive(true);
-            waveTimerText.text = seconds.ToString() + ":" + milli.ToString();
+            waveTimerParent = GameObject.FindGameObjectWithTag("WaveTimer");
+            waveTimerText = GameObject.FindGameObjectWithTag("WaveText").GetComponent<TMP_Text>();
+            zombiesLeftText = GameObject.FindGameObjectWithTag("ZombieText").GetComponent<TMP_Text>();
         }
-        else waveTimerParent.SetActive(false);
 
-        zombiesLeftText.text = curEnemies.ToString() + "/" + totalEnemies.ToString();
-        //Add fill bar of enemies killed
-        if (totalEnemies > 0) killImage.fillAmount = (curEnemies / totalEnemies);
-
-        if (Application.isEditor)
+        if (gameOverMenu == null)
         {
-            if (Input.GetKeyDown(KeyCode.O))
+            gameOverMenu = GameObject.FindGameObjectWithTag("GameOver");
+            gameOverMenu.SetActive(false);
+        }
+
+        if (gameOverMenu != null && !gameOverMenu.activeInHierarchy)
+        {
+            float minutes = Mathf.Floor(nextWaveCools / 60);
+            float seconds = Mathf.RoundToInt(nextWaveCools % 60);
+            float milli = Mathf.RoundToInt((nextWaveCools * 100) % 100);
+            //waveTimerText.text = "Next Wave - " + minutes.ToString() + ":" + seconds.ToString() + ":" + milli.ToString();
+
+            if (waveTimerParent != null && waveTimerParent != null)
             {
-                shopMenu.SetActive(!shopMenu.activeInHierarchy);
+                if (nextWaveCools > 0)
+                {
+                    waveTimerParent.SetActive(true);
+                    waveTimerText.text = seconds.ToString() + ":" + milli.ToString();
+                }
+                else waveTimerParent.SetActive(false);
             }
 
-            if (Input.GetKeyDown(KeyCode.K))
+            zombiesLeftText.text = curEnemies.ToString() + "/" + totalEnemies.ToString();
+            //Add fill bar of enemies killed
+            if (totalEnemies > 0) killImage.fillAmount = (curEnemies / totalEnemies);
+
+            if (Application.isEditor)
             {
-                var ob = FindObjectsOfType<MonoBehaviour>().OfType<IDamageable<float>>();
-                foreach (IDamageable<float> d in ob)
+                if (Input.GetKeyDown(KeyCode.O))
                 {
-                    d.Damage(dmg);
+                    shopMenu.SetActive(!shopMenu.activeInHierarchy);
+                }
+
+                if (Input.GetKeyDown(KeyCode.K))
+                {
+                    var ob = FindObjectsOfType<MonoBehaviour>().OfType<IDamageable<float>>();
+                    foreach (IDamageable<float> d in ob)
+                    {
+                        d.Damage(dmg);
+                    }
                 }
             }
-        }
 
-        //Skip to wave press
-        if (Input.GetButton("Submit") && curEnemies <= 0)
-        {
-            curHoldTime += Time.deltaTime;
-        }
-        if (Input.GetButtonUp("Submit"))
-        {
-            holdParent.gameObject.SetActive(false);
-            curHoldTime = 0;
-            holdImage.fillAmount = 0;
-        }
+            //Skip to wave press
+            if (Input.GetButton("Submit") && curEnemies <= 0)
+            {
+                curHoldTime += Time.deltaTime;
+            }
+            if (Input.GetButtonUp("Submit"))
+            {
+                holdParent.gameObject.SetActive(false);
+                curHoldTime = 0;
+                holdImage.fillAmount = 0;
+            }
 
-        //Skip to wave button activation and filling
-        if (curHoldTime > 0)
-        {
-            holdParent.gameObject.SetActive(true);
-            holdImage.fillAmount = (curHoldTime / holdForWaveTime);
+            //Skip to wave button activation and filling
+            if (curHoldTime > 0)
+            {
+                holdParent.gameObject.SetActive(true);
+                holdImage.fillAmount = (curHoldTime / holdForWaveTime);
+            }
+            else
+            {
+                holdParent.gameObject.SetActive(false);
+                holdImage.fillAmount = 0;
+            }
+
+            if (curEnemies > 0)
+            {
+                holdParent.gameObject.SetActive(false);
+                holdImage.fillAmount = 0;
+            }
+
+            if (curHoldTime >= holdForWaveTime && curEnemies <= 0)
+            {
+                nextWaveCools = 0;
+            }
+
+            if (cools > 0) cools -= Time.deltaTime;
+
+            if (nextWaveCools > 0) nextWaveCools -= Time.deltaTime;
+
+            //If theres no enemies and our countdown is 0
+            if (nextWaveCools <= 0 && curEnemies <= 0 && enemiesSpawned >= enemiesToSpawn)
+            {
+                //nextWaveCools = timeBetweenWaves;
+                wave++;
+                enemiesSpawned = 0;
+                totalEnemies = 0;
+                enemiesToSpawn = CalculateWave(wave);
+                GetEnemiesToSpawn();
+            }
+
+            //If our cooldown is 0 and we havent spawned enough enemies yet
+            if (cools <= 0 && enemiesSpawned < enemiesToSpawn && nextWaveCools <= 0)
+            {
+                SpawnEnemy();
+            }
+
+            nextWaveCools = Mathf.Clamp(nextWaveCools, 0, 999);
         }
-        else
-        {
-            holdParent.gameObject.SetActive(false);
-            holdImage.fillAmount = 0;
-        }
-
-        if (curEnemies > 0)
-        {
-            holdParent.gameObject.SetActive(false);
-            holdImage.fillAmount = 0;
-        }
-
-        if (curHoldTime >= holdForWaveTime && curEnemies <= 0)
-        {
-            nextWaveCools = 0;
-        }
-
-        if (cools > 0) cools -= Time.deltaTime;
-
-        if (nextWaveCools > 0) nextWaveCools -= Time.deltaTime;
-
-        //If theres no enemies and our countdown is 0
-        if (nextWaveCools <= 0 && curEnemies <= 0 && enemiesSpawned >= enemiesToSpawn)
-        {
-            //nextWaveCools = timeBetweenWaves;
-            wave++;
-            enemiesSpawned = 0;
-            totalEnemies = 0;
-            enemiesToSpawn = CalculateWave(wave);
-            GetEnemiesToSpawn();
-        }
-
-        //If our cooldown is 0 and we havent spawned enough enemies yet
-        if (cools <= 0 && enemiesSpawned < enemiesToSpawn && nextWaveCools <= 0)
-        {
-            SpawnEnemy();
-        }
-
-        nextWaveCools = Mathf.Clamp(nextWaveCools, 0, 999);
     }
 
     void SpawnEnemy()
     {
         //if (enemiesThisWave.Count > 0)
         //{
-            int num = Random.Range(0, 4);
-            GameObject enemy = enemiesThisWave[0];
-            if (num == 0)
-            {
-                //Spawn an enemy at a random position at the top of the screen
-                //Instantiate(enemy[Random.Range(0, enemy.Length)], new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), bounds.y + Random.Range(0f, 3f)), Quaternion.identity);
-                enemy.transform.position = new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), bounds.y + Random.Range(0f, 3f));
-            }
-            else if (num == 1)
-            {
-                //Spawn an enemy at a random position at the bottom of the screen
-                //Instantiate(enemy[Random.Range(0, enemy.Length)], new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), -bounds.y - Random.Range(0f, 3f)), Quaternion.identity);
-                enemy.transform.position = new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), -bounds.y - Random.Range(0f, 3f));
-            }
-            else if (num == 2)
-            {
-                //Spawn an enemy at a random position at the right of the screen
-                //Instantiate(enemy[Random.Range(0, enemy.Length)], new Vector3(-bounds.x - Random.Range(0f, 3f), Random.Range(-bounds.y + 1f, bounds.y - 1f)), Quaternion.identity);
-                enemy.transform.position = new Vector3(-bounds.x - Random.Range(0f, 3f), Random.Range(-bounds.y + 1f, bounds.y - 1f));
-            }
-            else
-            {
-                //Spawn an enemy at a random position at the left of the screen
-                //Instantiate(enemy[Random.Range(0, enemy.Length)], new Vector3(bounds.x + Random.Range(0f, 3f), Random.Range(-bounds.y + 1f, bounds.y - 1f)), Quaternion.identity);
-                enemy.transform.position = new Vector3(bounds.x + Random.Range(0f, 3f), Random.Range(-bounds.y + 1f, bounds.y - 1f));
-            }
-            enemy.SetActive(true);
-            enemiesSpawned += enemy.GetComponent<EnemyController>().spawnScore;
-            enemiesThisWave.Remove(enemy);
-            //Reset our timer so we have a wait between enemy spawns
-            cools = Random.Range(timeBetweenSpawnsLow, timeBetweenSpawnsHigh);
+        //int num = Random.Range(0, 4);
+        GameObject enemy = enemiesThisWave[0];
+        //if (num == 0)
+        //{
+        //    //Spawn an enemy at a random position at the top of the screen
+        //    //Instantiate(enemy[Random.Range(0, enemy.Length)], new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), bounds.y + Random.Range(0f, 3f)), Quaternion.identity);
+        //    //Spawns out of camera range
+        //    enemy.transform.position = new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), bounds.y + Random.Range(0f, 3f));
         //}
+        //else if (num == 1)
+        //{
+        //    //Spawn an enemy at a random position at the bottom of the screen
+        //    //Instantiate(enemy[Random.Range(0, enemy.Length)], new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), -bounds.y - Random.Range(0f, 3f)), Quaternion.identity);
+        //    //Spawns out of camera range
+        //    enemy.transform.position = new Vector3(Random.Range(-bounds.x + 1f, bounds.x - 1f), -bounds.y - Random.Range(0f, 3f));
+        //}
+        //else if (num == 2)
+        //{
+        //    //Spawn an enemy at a random position at the right of the screen
+        //    //Instantiate(enemy[Random.Range(0, enemy.Length)], new Vector3(-bounds.x - Random.Range(0f, 3f), Random.Range(-bounds.y + 1f, bounds.y - 1f)), Quaternion.identity);
+        //    //Spawns out of camera range
+        //    enemy.transform.position = new Vector3(-bounds.x - Random.Range(0f, 3f), Random.Range(-bounds.y + 1f, bounds.y - 1f));
+        //}
+        //else
+        //{
+        //    //Spawn an enemy at a random position at the left of the screen
+        //    //Instantiate(enemy[Random.Range(0, enemy.Length)], new Vector3(bounds.x + Random.Range(0f, 3f), Random.Range(-bounds.y + 1f, bounds.y - 1f)), Quaternion.identity);
+        //    //Spawns out of camera range
+        //    enemy.transform.position = new Vector3(bounds.x + Random.Range(0f, 3f), Random.Range(-bounds.y + 1f, bounds.y - 1f));
+        //}
+
+        //Spawn within map bounds
+        Vector3 spawnPos = new Vector3(Random.Range(-boxSpawns.x / 2, boxSpawns.x / 2), Random.Range(-boxSpawns.y / 2, boxSpawns.y / 2));
+        //Gotta see if we spawn the enemy in any colliders
+        Collider2D hit = Physics2D.OverlapCircle(spawnPos, 0.5f);
+        if (hit != null)
+        {
+            while (hit != null)
+            {
+                spawnPos = new Vector3(Random.Range(-boxSpawns.x / 2, boxSpawns.x / 2), Random.Range(-boxSpawns.y / 2, boxSpawns.y / 2));
+                hit = Physics2D.OverlapCircle(spawnPos, 0.5f);
+            }
+        }
+        if (hit == null) enemy.transform.position = spawnPos;
+        enemy.SetActive(true);
+        enemiesSpawned += enemy.GetComponent<EnemyController>().spawnScore;
+        enemiesThisWave.Remove(enemy);
+        //Reset our timer so we have a wait between enemy spawns
+        cools = Random.Range(timeBetweenSpawnsLow, timeBetweenSpawnsHigh);
+        //}
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(transform.position, new Vector3(boxSpawns.x, boxSpawns.y, 1));
+    }
+
+    public void PlaySound(AudioClip cl, float vol = 1f)
+    {
+        //soundSrc.volume = vol;
+        soundSrc.PlayOneShot(cl, vol);
     }
 
     public void EnemyDied()
     {
-        Debug.Log("Dead Enemy");
+        //Debug.Log("Dead Enemy");
     }
 
     public void GameOver()
     {
         //Activate UI for resetting level
+        gcUI.SetActive(false);
+        gameOverMenu.SetActive(true);
+    }
 
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

@@ -59,6 +59,8 @@ public class ZombieController : EnemyController
 
     public override void Damage(float damage)
     {
+        base.Damage(damage);
+
         hp -= damage;
 
         //anim.Play("ZombieHurt");
@@ -97,7 +99,9 @@ public class ZombieController : EnemyController
             //Instantiate(ammoDrop[Random.Range(0, ammoDrop.Length)], transform.position + new Vector3(Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f), Random.Range(-0.75f, 0.75f)), Quaternion.identity);
         }
 
-        Instantiate(deadSquid, transform.position, Quaternion.identity);
+        BodyController body = Instantiate(deadSquid, transform.position, Quaternion.identity).GetComponent<BodyController>();
+        body.ChangeSprite(deadSprite);
+
         //Object pool this later
         Invoke("Disable", 0.001f);
     }
@@ -139,12 +143,15 @@ public class ZombieController : EnemyController
 
     public override void Attack()
     {
-        Vector3 dir = target.position - transform.position;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + Random.Range(-15f, 15f) - 90f;
-        Quaternion.AngleAxis(angle, Vector3.forward);
-        //Instantiate(bullet, transform.position, Quaternion.AngleAxis(angle, Vector3.forward));
-        cools = timeBetweenAttacks;
-        curState = states.chase;
+        if (target != null)
+        {
+            Vector3 dir = target.position - transform.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + Random.Range(-15f, 15f) - 90f;
+            Quaternion.AngleAxis(angle, Vector3.forward);
+            //Instantiate(bullet, transform.position, Quaternion.AngleAxis(angle, Vector3.forward));
+            cools = timeBetweenAttacks;
+            curState = states.chase;
+        }
     }
 
     void OnDrawGizmos()

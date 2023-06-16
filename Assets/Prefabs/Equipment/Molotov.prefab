@@ -98,8 +98,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a988ce257305e418dea89f34f4777a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pushForce: 350
+  pushForce: 650
   fireObj: {fileID: 5729374424655278205, guid: 49bb95766b073a446a8a489c44319f8f, type: 3}
+  clip: {fileID: 0}
+  vol: 0.559
+  disableTime: 1
+  explodeVelocity: 0.25
+  rotSpd: 280
 --- !u!50 &2121394580596041359
 Rigidbody2D:
   serializedVersion: 4
@@ -113,7 +118,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 3
+  m_LinearDrag: 4
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}

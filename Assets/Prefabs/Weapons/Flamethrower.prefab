@@ -51,12 +51,12 @@ MonoBehaviour:
   itemName: Flamethrower
   itemDescription: 
   cost: 100
-  id: 20
-  dmgLow: 14
-  dmgHigh: 20
   sprite: {fileID: -2910323598088949028, guid: 85764cb7e56a2c4489fe083b71897f19, type: 3}
   spriteWidth: 40
   spriteHeight: 14
+  id: 20
+  dmgLow: 14
+  dmgHigh: 20
   thisType: 5
   cooldown: 0.75
   spreadLow: 1.25
@@ -73,6 +73,7 @@ MonoBehaviour:
   sinAmplitude: 0.1
   sinFrequency: 1
   buyText: {fileID: 0}
+  cocks: 0
 --- !u!212 &7502558932640507901
 SpriteRenderer:
   m_ObjectHideFlags: 0

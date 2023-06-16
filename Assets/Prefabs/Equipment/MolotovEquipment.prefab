@@ -134,5 +134,7 @@ MonoBehaviour:
   buyText: {fileID: 0}
   refillCost: 85
   fills: 2
+  clip: {fileID: 0}
+  vol: 0.4
   molotovPrefab: {fileID: 2121394580596041360, guid: a85439758475e994588776a21b52cc6b,
     type: 3}

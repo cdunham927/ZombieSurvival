@@ -135,4 +135,6 @@ MonoBehaviour:
   buyText: {fileID: 0}
   refillCost: 50
   fills: 2
+  clip: {fileID: 8300000, guid: e40e5576005279e49b7e667274b08e3c, type: 3}
+  vol: 0.4
   mine: {fileID: 6387078967203824548, guid: d88f54d33f7353c45938137208e0d4ab, type: 3}

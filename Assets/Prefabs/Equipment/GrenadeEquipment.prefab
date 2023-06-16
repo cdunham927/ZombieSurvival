@@ -135,5 +135,7 @@ MonoBehaviour:
   buyText: {fileID: 0}
   refillCost: 70
   fills: 3
+  clip: {fileID: 0}
+  vol: 1
   grenadePrefab: {fileID: 7177488594141429383, guid: bad27db78a4415f429677fcaa7de9744,
     type: 3}

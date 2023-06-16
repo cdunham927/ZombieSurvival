@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 9132878346575459005}
   - component: {fileID: 4714205028917899608}
   - component: {fileID: 6421240594138963978}
+  - component: {fileID: 6933484149187128844}
   m_Layer: 0
   m_Name: ZombieSquid
   m_TagString: Enemy
@@ -159,6 +160,22 @@ MonoBehaviour:
   slowSpd: 125
   curState: 0
   horizontalFace: 0
+  moneyDropChance: 0
+  moneyDrop: {fileID: 0}
+  healthDropChance: 0
+  healthDrop: {fileID: 0}
+  ammoDropChance: 0
+  ammoDrop: []
+  allAmmoDropChance: 0
+  allAmmoDrop: {fileID: 0}
+  spawnScore: 0
+  bloodRend: {fileID: 0}
+  bloodSprites: []
+  dmgParts: {fileID: 0}
+  dmgPartsAmt: 5
+  deadSprite: {fileID: 0}
+  lowPitch: 0.8
+  highPitch: 1.2
   bullet: {fileID: 4878740064692185485, guid: a07786d06dbb8ee44ba6ecfc4a456273, type: 3}
 --- !u!114 &2524348397815368685
 MonoBehaviour:
@@ -231,6 +248,103 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
+--- !u!82 &6933484149187128844
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083996300723432900}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 3628586435591994544, guid: a806a14b0e2651f42b7a5fd1c617084e,
+    type: 2}
+  m_audioClip: {fileID: 8300000, guid: 96e9698cd5218b64eb75206d083eb252, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.6
+  m_Pitch: 1.2
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 5
+  Pan2D: 0
+  rolloffMode: 2
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.002
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.9896736
+      value: 0
+      inSlope: -1.002004
+      outSlope: -1.002004
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.707
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5653452416070663989
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,7 +537,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &226875600634384049
 Transform:
   m_ObjectHideFlags: 0

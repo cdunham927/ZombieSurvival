@@ -59,8 +59,16 @@ public abstract class EnemyController : MonoBehaviour
     public ParticleSystem dmgParts;
     public int dmgPartsAmt = 5;
 
+    //Dead Zombie sprite
+    public Sprite deadSprite;
+
+    AudioSource src;
+    public float lowPitch;
+    public float highPitch;
+
     private void Awake()
     {
+        src = GetComponent<AudioSource>();
         startPos = transform.position;
         anim = GetComponent<Animator>();
         rend = GetComponent<SpriteRenderer>();
@@ -74,6 +82,12 @@ public abstract class EnemyController : MonoBehaviour
     public virtual void OnEnable()
     {
         curSpd = spd;
+        Invoke("FindPlayer", 0.1f);
+    }
+
+    protected void FindPlayer()
+    {
+        target = FindObjectOfType<PlayerController>().transform;
     }
 
     protected void CheckHpAnim()
@@ -95,19 +109,22 @@ public abstract class EnemyController : MonoBehaviour
         }
     }
 
-    public virtual void Damage(float damage) { }
+    public virtual void Damage(float damage) 
+    {
+        src.pitch = Random.Range(lowPitch, highPitch);
+        src.Play();
+    }
     public virtual void Die() { }
 
     void UpdatePath()
     {
-        target = FindObjectOfType<PlayerController>().transform;
         if (target == null)
         {
             seeker.StartPath(bod.position, startPos, OnPathComplete);
             return;
         }
 
-        if (seeker.IsDone()) seeker.StartPath(bod.position, target.position, OnPathComplete);
+        if (seeker.IsDone() && target != null) seeker.StartPath(bod.position, target.position, OnPathComplete);
     }
 
     void OnPathComplete(Path p)

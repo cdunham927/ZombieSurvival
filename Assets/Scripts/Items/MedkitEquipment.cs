@@ -15,6 +15,7 @@ public class MedkitEquipment : Equipment
 
     public override void UseItem()
     {
+        base.UseItem();
         PlayerController pl = FindObjectOfType<PlayerController>();
 
         pl.Heal(amt);

@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5776320652414296822}
   - component: {fileID: 7810544616051524268}
-  - component: {fileID: 6586104602483735967}
   - component: {fileID: 2272477212249795433}
+  - component: {fileID: 1356528062}
   m_Layer: 0
   m_Name: AllAmmoPickup
   m_TagString: Untagged
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b,
+  m_Sprite: {fileID: 1377863753653754034, guid: e4693fb38ddfb7c4dbd3119962765113,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -86,22 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &6586104602483735967
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8016724995745504123}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
 --- !u!114 &2272477212249795433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,3 +102,31 @@ MonoBehaviour:
   spd: {fileID: 11400000, guid: a7166916fa59ad14ab4617d3e54293e9, type: 2}
   timeToDisable: {fileID: 11400000, guid: efa3a26823d780445878165d953cd91e, type: 2}
   canPickup: 1
+  pickupClip: {fileID: 8300000, guid: fb0ba0b2f5e8f5d469225daf475b48a2, type: 3}
+  sndVolume: 0
+--- !u!61 &1356528062
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8016724995745504123}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.1}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.7111111, y: 0.7111111}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.7111111, y: 0.5}
+  m_EdgeRadius: 0

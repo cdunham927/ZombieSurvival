@@ -13,6 +13,9 @@ public class RocketController : MonoBehaviour
     public float knockback = 0f;
 
     GameController cont;
+    public AudioClip clip;
+    public float vol;
+
     private void Awake()
     {
         cont = FindObjectOfType<GameController>();
@@ -53,11 +56,13 @@ public class RocketController : MonoBehaviour
         {
             //collision.GetComponent<EnemyController>().Damage(atk);
             cont.ActivateExplosion(transform.position);
+            cont.PlaySound(clip, vol);
             collision.attachedRigidbody.AddForce(transform.up * knockback);
             Invoke("Disable", 0.001f);
         }
         if (collision.CompareTag("Wall"))
         {
+            cont.PlaySound(clip, vol);
             cont.ActivateExplosion(transform.position);
             Invoke("Disable", 0.001f);
         }

@@ -11,6 +11,9 @@ public class Mine : MonoBehaviour
     public ScriptableFloat dmg;
 
     GameController cont;
+    public AudioClip clip;
+    [Range(0, 1)]
+    public float vol;
 
     private void Awake()
     {
@@ -29,6 +32,7 @@ public class Mine : MonoBehaviour
         {
             hasExploded = true;
             cont.ActivateExplosion(transform.position);
+            cont.PlaySound(clip, vol);
             Invoke("Disable", 0.001f);
             //anim.SetTrigger("Explode");
             //Explode();
@@ -40,6 +44,8 @@ public class Mine : MonoBehaviour
         if ((collision.CompareTag("Enemy")) && !hasExploded)
         {
             hasExploded = true;
+            cont.ActivateExplosion(transform.position);
+            cont.PlaySound(clip, vol);
             Invoke("Disable", 0.001f);
             //anim.SetTrigger("Explode");
             //Explode();

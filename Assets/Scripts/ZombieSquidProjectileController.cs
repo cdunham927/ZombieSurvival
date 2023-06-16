@@ -39,7 +39,7 @@ public class ZombieSquidProjectileController : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            PlayerController.player.Damage(atk);
+            collision.GetComponent<PlayerController>().Damage(atk);
             Invoke("Disable", 0.001f);
         }
     }

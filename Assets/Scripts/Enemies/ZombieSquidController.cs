@@ -37,8 +37,10 @@ public class ZombieSquidController : EnemyController, IDamageable<float>, IKilla
         health.fillAmount = Mathf.Lerp(health.fillAmount, (hp / maxHp), lerpSpd * Time.deltaTime);
     }
 
-    public void Damage(float damage)
+    public override void Damage(float damage)
     {
+        base.Damage(damage);
+
         hp -= damage;
 
         //anim.Play("ZombieSquidHurt");

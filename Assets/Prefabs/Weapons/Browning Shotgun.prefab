@@ -283,14 +283,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Browning
-  itemDescription: 
-  cost: 50
-  id: 11
-  dmgLow: 6
-  dmgHigh: 10
+  itemDescription: Semi-automatic shotgun with low spread.
+  cost: 450
   sprite: {fileID: -5433830432410116833, guid: 0a9237e5045df004295294cc60837400, type: 3}
   spriteWidth: 57
   spriteHeight: 11
+  id: 11
+  dmgLow: 6
+  dmgHigh: 10
   thisType: 1
   cooldown: 0.275
   spreadLow: 1.5
@@ -307,7 +307,7 @@ MonoBehaviour:
   sinAmplitude: 0.1
   sinFrequency: 1
   buyText: {fileID: 1847852387574443453}
-  cocks: 1
+  cocks: 0
 --- !u!212 &1847852388397347989
 SpriteRenderer:
   m_ObjectHideFlags: 0

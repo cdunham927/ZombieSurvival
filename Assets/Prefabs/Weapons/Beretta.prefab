@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Beretta
-  itemDescription: 
-  cost: 650
+  itemDescription: Powerful bolt action sniper that pierces through enemies.
+  cost: 700
   sprite: {fileID: 1065835016181501227, guid: 834e61b5f7c89824cab9cecc36708c76, type: 3}
   spriteWidth: 62
   spriteHeight: 14
@@ -121,7 +121,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.28, y: 0.19}
+  m_Size: {x: 0.62, y: 0.14}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -159,7 +159,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.62, y: 0.14}
-    newSize: {x: 0.28, y: 0.19}
+    newSize: {x: 0.62, y: 0.14}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

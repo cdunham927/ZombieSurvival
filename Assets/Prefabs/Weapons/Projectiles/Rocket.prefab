@@ -102,6 +102,8 @@ MonoBehaviour:
   spd: 700
   life: 2
   knockback: 15
+  clip: {fileID: 8300000, guid: 56e42114e188e4e478c15eadfc7b4d11, type: 3}
+  vol: 0.275
 --- !u!61 &567523402875122535
 BoxCollider2D:
   m_ObjectHideFlags: 0

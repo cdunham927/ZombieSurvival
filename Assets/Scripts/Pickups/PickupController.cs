@@ -18,6 +18,7 @@ public class PickupController : MonoBehaviour
 
     protected AudioSource src;
     public AudioClip pickupClip;
+    [Range(0, 1)]
     public float sndVolume;
 
     private void Awake()
@@ -35,11 +36,14 @@ public class PickupController : MonoBehaviour
 
     protected virtual void Update()
     {
-        float distance = Vector2.Distance(transform.position, player.transform.position);
-
-        if (distance <= distanceToPickup.val && canPickup)
+        if (player != null)
         {
-            transform.position = Vector2.MoveTowards(transform.position, player.transform.position, spd.val * Time.deltaTime);
+            float distance = Vector2.Distance(transform.position, player.transform.position);
+
+            if (distance <= distanceToPickup.val && canPickup)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, player.transform.position, spd.val * Time.deltaTime);
+            }
         }
 
         if (curTime > 0)
