@@ -95,8 +95,11 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     public float doctorSpecialCooldown;
     public float hpRevertLerp;
 
+    Camera cam;
+
     private void Awake()
     {
+        cam = Camera.main;
         src = GetComponent<AudioSource>();
         cont = FindObjectOfType<GameController>();
         anim = GetComponent<Animator>();
@@ -172,6 +175,11 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     {
         if (curHp > 0)
         {
+            //Aim at mouse
+            Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (mousePos - (Vector2)transform.position).normalized;
+            transform.up = direction;
+
             if (coffeeCooldown > 0)
             {
                 spdMod = scriptSpd.val;

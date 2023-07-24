@@ -79,6 +79,8 @@ public class ZombieController : EnemyController
 
     public override void Die()
     {
+        base.Die();
+
         //If we roll good enough, drop an item for the player
         float chance = Random.value;
 

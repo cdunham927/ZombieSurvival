@@ -53,8 +53,10 @@ public class ZombieSquidController : EnemyController, IDamageable<float>, IKilla
         }
     }
 
-    public void Die()
+    public override void Die()
     {
+        base.Die();
+
         Instantiate(deadSquid, transform.position, Quaternion.identity);
         //Object pool this later
         Invoke("Disable", 0.001f);

@@ -330,9 +330,9 @@ public class WeaponController : MonoBehaviour
     private void Update()
     {
         //Aim at mouse
-        Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 direction = (mousePos - (Vector2)transform.position).normalized;
-        transform.right = direction;
+        //Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+        //Vector2 direction = (mousePos - (Vector2)transform.position).normalized;
+        //transform.right = direction;
 
         //bool myBool = Mathf.Approximately(aim, 1);
 
@@ -694,7 +694,7 @@ public class WeaponController : MonoBehaviour
         {
             playerItems.Add(item);
             hotbarSprites[filledSlots].rectTransform.sizeDelta = new Vector2(playerItems[filledSlots].spriteWidth, playerItems[filledSlots].spriteHeight);
-            hotbarSprites[filledSlots].sprite = item.sprite;
+            hotbarSprites[filledSlots].sprite = item.GetComponent<SpriteRenderer>().sprite;
             hotbarSprites[filledSlots].color = Color.white;
             hotbarSlotsAmmo[filledSlots] = item.clipSize;
         }
@@ -703,7 +703,7 @@ public class WeaponController : MonoBehaviour
             playerItems.Remove(playerItems[curSlot]);
             playerItems.Insert(curSlot, item);
             hotbarSprites[curSlot].rectTransform.sizeDelta = new Vector2(playerItems[curSlot].spriteWidth, playerItems[curSlot].spriteHeight);
-            hotbarSprites[curSlot].sprite = item.sprite;
+            hotbarSprites[filledSlots].sprite = item.GetComponent<SpriteRenderer>().sprite;
             hotbarSprites[curSlot].color = Color.white;
             hotbarSlotsAmmo[curSlot] = item.clipSize;
             SwitchItem(curSlot);
@@ -838,8 +838,8 @@ public class WeaponController : MonoBehaviour
         GameObject obj = GetBullet();
         obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh, dmgMod);
         obj.transform.position = spawns[0].transform.position;
-        playerBod.AddForceAtPosition(-transform.right * force, transform.position);
-        obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + ran);
+        playerBod.AddForceAtPosition(-transform.up * force, transform.position);
+        obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, ran);
         cools = cooldown;
         obj.SetActive(true);
 
@@ -862,8 +862,8 @@ public class WeaponController : MonoBehaviour
         GameObject obj = GetSMGBullet();
         obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh, dmgMod);
         obj.transform.position = spawns[0].transform.position;
-        playerBod.AddForceAtPosition(-transform.right * force, transform.position);
-        obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + ran);
+        playerBod.AddForceAtPosition(-transform.up * force, transform.position);
+        obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, ran);
         cools = cooldown;
         obj.SetActive(true);
         src.PlayOneShot(mgShoot);
@@ -895,8 +895,8 @@ public class WeaponController : MonoBehaviour
         GameObject obj = GetRocket();
         //obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh, dmgMod);
         obj.transform.position = spawns[0].transform.position;
-        playerBod.AddForceAtPosition(-transform.right * force, transform.position);
-        obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + ran);
+        playerBod.AddForceAtPosition(-transform.up * force, transform.position);
+        obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, ran);
         cools = cooldown;
         obj.SetActive(true);
         src.PlayOneShot(rpgShoot);
@@ -932,8 +932,8 @@ public class WeaponController : MonoBehaviour
             GameObject obj = GetShot();
             obj.GetComponent<BulletController>().SetDamage(dmgLow, dmgHigh, dmgMod);
             obj.transform.position = (Vector2)spawns[0].transform.position + Random.insideUnitCircle * curAcc * (0.035f + Random.Range(-0.035f, 0.035f));
-            playerBod.AddForceAtPosition(-transform.right * force, transform.position);
-            obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, -90 + (i * curAcc) - curAcc);
+            playerBod.AddForceAtPosition(-transform.up * force, transform.position);
+            obj.transform.rotation = transform.rotation * Quaternion.Euler(0, 0, (i * curAcc) - curAcc);
             obj.SetActive(true);
         }
         //Play audio clip for weapon

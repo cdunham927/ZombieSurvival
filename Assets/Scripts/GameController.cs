@@ -14,6 +14,9 @@ public class GameController : MonoBehaviour
     //Waves
     public int wave = 1;
     public GameObject[] enemy;
+    public List<GameObject> zombies;
+    public List<GameObject> zombieSquids;
+    public List<GameObject> zombieBehemoths;
     public float enemiesToSpawn;
     //If player kills all enemies, the countdown to the next wave starts
     [SerializeField]
@@ -66,6 +69,21 @@ public class GameController : MonoBehaviour
 
     //Spawn within a box;
     public Vector2 boxSpawns;
+
+    [Space]
+    [Header("Pause game for JUICE")]
+    //Our slow timescale, 0.1 or something probably
+    public float freezeTime;
+    //The speed at which we start going back to normal, probably 0.9
+    public float freezeFPS;
+    //How long we wait until we start increasing time
+    public float freezeResumeTime;
+    float freezeCurTime;
+    //How fast we go from 0.9 to 1.0 timescale
+    public float freezeLerpSpd;
+
+    //Object pool
+
 
     private void Awake()
     {
@@ -137,7 +155,33 @@ public class GameController : MonoBehaviour
         float score = Mathf.RoundToInt(zombIncrease * w) + initialZombieScore;
         return score;
     }
-    
+
+    GameObject GetNewEnemy(List<GameObject> eList, int ets)
+    {
+        if (eList.Count <= 0)
+        {
+            GameObject o = Instantiate(enemy[ets], transform.position, Quaternion.identity);
+            eList.Add(o);
+            //o.SetActive(false);
+
+            return o;
+        }
+        //Return hit obj
+        for (int i = 0; i < eList.Count; i++)
+        {
+            if (!eList[i].activeInHierarchy && !enemiesThisWave.Contains(eList[i]))
+            {
+                return eList[i];
+            }
+        }
+
+        GameObject obj = Instantiate(enemy[ets], transform.position, Quaternion.identity);
+        eList.Add(obj);
+        //obj.SetActive(false);
+
+        return obj;
+    }
+
     //What enemies we'll spawn this wave
     //We can object pool them later
     public List<GameObject> enemiesThisWave = new List<GameObject>();
@@ -152,7 +196,27 @@ public class GameController : MonoBehaviour
         //Loop and get random enemies until we have enough for the wave
         while (sco < enemiesToSpawn)
         {
-            GameObject o = Instantiate(enemy[Random.Range(0, enemy.Length)]);
+            //Instantiate an enemy, add it to our list, then disable it. We should have everything object pooled beforehand
+            int index = Random.Range(0, enemy.Length);
+            GameObject o;
+            switch (index)
+            {
+                case 0:
+                    o = GetNewEnemy(zombies, 0);
+                    break;
+                case 1:
+                    o = GetNewEnemy(zombieSquids, 1);
+                    break;
+                case 2:
+                    o = GetNewEnemy(zombieBehemoths, 2);
+                    break;
+                default:
+                    o = GetNewEnemy(zombies, 0);
+                    break;
+            }
+
+            //GameObject o = Instantiate(enemy[Random.Range(0, enemy.Length)]);
+
             EnemyController e = o.GetComponent<EnemyController>();
             o.SetActive(false);
             sco += e.spawnScore;
@@ -220,7 +284,12 @@ public class GameController : MonoBehaviour
                     waveTimerParent.SetActive(true);
                     waveTimerText.text = seconds.ToString() + ":" + milli.ToString();
                 }
-                else waveTimerParent.SetActive(false);
+                else
+                {
+                    FindObjectOfType<ShopProximityController>().ExitStore();
+                    FindObjectOfType<VendingMachineController>().ExitStore();
+                    waveTimerParent.SetActive(false);
+                }
             }
 
             zombiesLeftText.text = curEnemies.ToString() + "/" + totalEnemies.ToString();
@@ -301,6 +370,13 @@ public class GameController : MonoBehaviour
             }
 
             nextWaveCools = Mathf.Clamp(nextWaveCools, 0, 999);
+
+            if (freezeCurTime > 0) freezeCurTime -= Time.deltaTime;
+
+            if (Time.timeScale <= 1f && freezeCurTime <= 0)
+            {
+                Time.timeScale += Time.deltaTime * freezeLerpSpd;
+            }
         }
     }
 
@@ -358,6 +434,19 @@ public class GameController : MonoBehaviour
         //Reset our timer so we have a wait between enemy spawns
         cools = Random.Range(timeBetweenSpawnsLow, timeBetweenSpawnsHigh);
         //}
+    }
+
+    public void FreezeTime()
+    {
+        Time.timeScale = freezeTime;
+        freezeCurTime = freezeResumeTime;
+
+        Invoke("ResumeTime", freezeResumeTime);
+    }
+
+    public void ResumeTime()
+    {
+        Time.timeScale = freezeFPS;
     }
 
     private void OnDrawGizmosSelected()

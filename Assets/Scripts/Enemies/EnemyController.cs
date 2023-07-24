@@ -6,6 +6,7 @@ using Pathfinding;
 
 public abstract class EnemyController : MonoBehaviour
 {
+    GameController cont;
     public float hp = 50;
     public float maxHp = 50;
     public GameObject deadSquid;
@@ -68,6 +69,7 @@ public abstract class EnemyController : MonoBehaviour
 
     private void Awake()
     {
+        cont = FindObjectOfType<GameController>();
         src = GetComponent<AudioSource>();
         startPos = transform.position;
         anim = GetComponent<Animator>();
@@ -114,7 +116,10 @@ public abstract class EnemyController : MonoBehaviour
         src.pitch = Random.Range(lowPitch, highPitch);
         src.Play();
     }
-    public virtual void Die() { }
+    public virtual void Die()
+    {
+        cont.FreezeTime();
+    }
 
     void UpdatePath()
     {
