@@ -8,14 +8,14 @@ using TMPro;
 public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
 {
     //Singleton behavior for player
-    GameController cont;
+    protected GameController cont;
     //public static PlayerController player;
-    PlayerExtraStats extraStats;
+    protected PlayerExtraStats extraStats;
 
     //Stats
     public float maxHp;
     public float overhealMaxHp;
-    float curHp;
+    protected float curHp;
     public float maxStam;
     public float curStam;
     public float money;
@@ -32,12 +32,12 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     public float spd;
     public float runSpd;
     public float aimSpd;
-    float curSpd;
-    Rigidbody2D bod;
-    Vector2 move;
+    protected float curSpd;
+    protected Rigidbody2D bod;
+    protected Vector2 move;
 
     //Weapon
-    WeaponController weapon;
+    protected WeaponController weapon;
 
     //Player actions/Input
     //public PlayerActions playerActions;
@@ -48,22 +48,22 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     float speedMod;
 
     //Damage
-    float iframes;
+    protected float iframes;
     [Range(0, 1f)]
     public float iframeTime = 0.25f;
 
-    Animator anim;
+    protected Animator anim;
 
     public ScriptableFloat curMagnet;
     public ScriptableFloat badMagnet;
     public ScriptableFloat goodMagnet;
 
     public ScriptableFloat scriptSpd;
-    float spdMod;
+    protected float spdMod;
     public float magnetCooldownTime;
-    float magnetCooldown;
+    protected float magnetCooldown;
     public float coffeeCooldownTime;
-    float coffeeCooldown;
+    protected float coffeeCooldown;
 
     //Player can't move or shoot whilst in menus
     public bool canMove = true;
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     public Sprite deadSprite;
     public GameObject deadPlayer;
 
-    AudioSource src;
+    protected AudioSource src;
     public AudioClip hitClip;
     public float lowPitch;
     public float highPitch;
@@ -90,12 +90,12 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     [Space]
     [Header("Different characters and their variables")]
     public characters thisCharacter;
-    float specialCooldown;
+    protected float specialCooldown;
     [Header("Doctor special stats")]
     public float doctorSpecialCooldown;
     public float hpRevertLerp;
 
-    Camera cam;
+    protected Camera cam;
 
     private void Awake()
     {
@@ -263,7 +263,6 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
                     money++;
                 }
             }
-
             //anim.SetFloat("moveX", bod.velocity.x);
             //anim.SetFloat("moveY", bod.velocity.y);
 
@@ -374,25 +373,7 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
         cont.GameOver();
     }
 
-    public void UseSpecial()
-    {
-        switch(thisCharacter)
-        {
-            case characters.doctor:
-                Overheal();
-                break;
-        }
-    }
-
-    //Overheals the player to double their max hp
-    //Buffs the player for a short time
-    //Hp reverts to normal over time
-    public void Overheal()
-    {
-        hpImg.color = Color.yellow;
-        curHp = overhealMaxHp;
-        specialCooldown = doctorSpecialCooldown;
-    }
+    public virtual void UseSpecial() { }
 }
 
 public class QuestHolder : MonoBehaviour
