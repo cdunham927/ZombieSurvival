@@ -219,4 +219,9 @@ public abstract class EnemyController : MonoBehaviour
             curSpd = spd;
         }
     }
+
+    public void Convert()
+    {
+
+    }
 }
