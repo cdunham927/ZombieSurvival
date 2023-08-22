@@ -400,7 +400,7 @@ public class WeaponController : MonoBehaviour
         }
 
         //Use Equipment
-        if (Input.GetButtonDown("Fire2") && equipUses > 0 && curEquipment != null)
+        if (Input.GetButtonDown("Fire3") && equipUses > 0 && curEquipment != null)
         {
             curEquipment.UseItem();
             //curEquipment.fills--;

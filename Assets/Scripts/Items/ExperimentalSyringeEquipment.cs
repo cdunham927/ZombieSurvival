@@ -13,7 +13,7 @@ public class ExperimentalSyringeEquipment : Equipment
 
         ExperimentalSyringe s = Instantiate(syringe, pl.transform.position, Quaternion.identity).GetComponent<ExperimentalSyringe>();
         weapons = pl.GetComponentInChildren<WeaponController>();
-        s.transform.rotation = weapons.transform.rotation * Quaternion.Euler(0, 0, -90);
+        s.transform.rotation = weapons.transform.rotation * Quaternion.Euler(0, 0, 0);
         s.Push();
     }
 }

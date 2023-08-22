@@ -12,8 +12,8 @@ public class PlayerExtraStats : MonoBehaviour
     public float healthMod;
     public float healingMod;
     public float critMod;
-    public float elementalDamageMod;
-    public float elementalChanceMod;
+    //public float elementalDamageMod;
+    //public float elementalChanceMod;
     public float shopPriceMod;
     public float dropMod;
     public float startMoney;

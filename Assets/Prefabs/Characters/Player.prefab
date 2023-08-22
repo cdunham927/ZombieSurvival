@@ -20475,8 +20475,6 @@ MonoBehaviour:
   healthMod: 0
   healingMod: 0
   critMod: 0
-  elementalDamageMod: 0
-  elementalChanceMod: 0
   shopPriceMod: 0
   dropMod: 0
   startMoney: 0

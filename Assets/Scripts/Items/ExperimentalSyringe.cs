@@ -56,11 +56,13 @@ public class ExperimentalSyringe : MonoBehaviour
     {
         if (collision.CompareTag("Enemy") && canDisable)
         {
-            Convert();
+            collision.GetComponent<EnemyController>().Convert();
+            Destroy();
         }
         if (collision.CompareTag("NPC") && canDisable)
         {
-            Heal();
+            collision.GetComponent<NPCController>().Heal(healAmt.val);
+            Destroy();
         }
         if (collision.CompareTag("Wall") && canDisable)
         {

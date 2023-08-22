@@ -86,14 +86,10 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     public float highPitch;
 
     //Different characters
-    public enum characters { doctor }
     [Space]
     [Header("Different characters and their variables")]
-    public characters thisCharacter;
-    protected float specialCooldown;
-    [Header("Doctor special stats")]
-    public float doctorSpecialCooldown;
-    public float hpRevertLerp;
+    protected float curSpecialCooldown;
+    public float specialCooldown;
 
     protected Camera cam;
 
@@ -126,7 +122,7 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
         curStam = maxStam;
 
         money = extraStats.startMoney;
-        specialCooldown = 0;
+        curSpecialCooldown = 0;
 
         if (Application.isEditor)
         {
@@ -151,11 +147,6 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
         magnetCooldown = magnetCooldownTime;
     }
 
-    public void AddMoney(float amt)
-    {
-        money += amt;
-    }
-
     public float GetHealth()
     {
         return curHp;
@@ -171,7 +162,7 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
         canMove = true;
     }
 
-    private void Update()
+    public virtual void Update()
     {
         if (curHp > 0)
         {
@@ -233,19 +224,19 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
             }
             curStam = Mathf.Clamp(curStam, 0, maxStam);
 
-            if (Input.GetButton("Fire2") && specialCooldown <= 0)
+            if (Input.GetButton("Fire2") && curSpecialCooldown <= 0)
             {
                 UseSpecial();
             }
 
-            if (specialCooldown > 0) specialCooldown -= Time.deltaTime;
+            if (curSpecialCooldown > 0) curSpecialCooldown -= Time.deltaTime;
 
             //Debugging
             if (Application.isEditor)
             {
                 if (Input.GetKeyDown(KeyCode.P))
                 {
-                    Debug.Break();
+                    //Debug.Break();
                 }
 
                 if (Input.GetKeyDown(KeyCode.L))
@@ -269,11 +260,6 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
             if (iframes > 0) iframes -= Time.deltaTime;
         }
 
-        if (curHp > maxHp)
-        {
-            curHp -= Time.deltaTime * hpRevertLerp;
-        }
-
         //UI
         hpImg.fillAmount = Mathf.Lerp(hpImg.fillAmount, (curHp / maxHp), uiLerpSpd * Time.deltaTime);
         //if (curHp > maxHp)
@@ -293,16 +279,6 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
         //if (extraHpParent.activeInHierarchy) extraHpImg.color = Color.yellow;
         Invoke("hpToRed", 0.5f);
         curHp = maxHp;
-    }
-
-    public void Heal(float amt)
-    {
-        if (curHp + amt > maxHp) curHp = maxHp;
-        else curHp += amt;
-
-        healParts.Emit(healNums);
-
-        CheckHpAnim();
     }
 
     void hpToRed()
@@ -374,6 +350,21 @@ public class PlayerController : MonoBehaviour, IDamageable<float>, IKillable
     }
 
     public virtual void UseSpecial() { }
+
+    public virtual void Heal(float amt)
+    {
+        if (curHp + amt > maxHp) curHp = maxHp;
+        else curHp += amt;
+
+        healParts.Emit(healNums);
+
+        CheckHpAnim();
+    }
+
+    public virtual void AddMoney(float amt)
+    {
+        money += amt;
+    }
 }
 
 public class QuestHolder : MonoBehaviour
