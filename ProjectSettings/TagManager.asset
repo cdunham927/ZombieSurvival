@@ -12,6 +12,7 @@ TagManager:
   - WaveText
   - ZombieText
   - NPC
+  - NPCText
   layers:
   - Default
   - TransparentFX
