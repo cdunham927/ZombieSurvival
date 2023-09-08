@@ -8,10 +8,12 @@ public abstract class EnemyController : MonoBehaviour
 {
     GameController cont;
     public float hp = 50;
+    public float zombifyHp = 50;
     public float maxHp = 50;
     public GameObject deadSquid;
     public float chaseDistance;
     public float attackRange;
+    public GameObject hpParent;
     public Image health;
     public float lerpSpd = 5f;
     public float timeBetweenAttacks;
@@ -69,6 +71,8 @@ public abstract class EnemyController : MonoBehaviour
 
     private void Awake()
     {
+        zombifyHp = Mathf.Round(hp / 3);
+
         cont = FindObjectOfType<GameController>();
         src = GetComponent<AudioSource>();
         startPos = transform.position;
@@ -83,10 +87,12 @@ public abstract class EnemyController : MonoBehaviour
 
     public virtual void OnEnable()
     {
+        //GetComponentInChildren<DamageTrigger>().enabled = true;
         curSpd = spd;
         Invoke("FindPlayer", 0.1f);
     }
 
+    //Need to replace this with checking for a target thats closest to its current position
     protected void FindPlayer()
     {
         target = FindObjectOfType<PlayerController>().transform;
@@ -222,6 +228,21 @@ public abstract class EnemyController : MonoBehaviour
 
     public void Convert()
     {
+        GetComponentInChildren<DamageTrigger>().enabled = false;
+        hpParent.gameObject.SetActive(false);
 
+        NPCController npc = GetComponent<NPCController>();
+        npc.enabled = true;
+        npc.spd = spd;
+        npc.Alive();
+
+        this.enabled = false;
+    }
+
+    public void Zombify()
+    {
+        hpParent.gameObject.SetActive(true);
+        GetComponentInChildren<DamageTrigger>().enabled = true;
+        hp = zombifyHp;
     }
 }

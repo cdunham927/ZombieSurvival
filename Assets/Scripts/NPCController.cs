@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Pathfinding;
 
 public class NPCController : MonoBehaviour
 {
@@ -12,10 +13,9 @@ public class NPCController : MonoBehaviour
     public bool inRange = false;
     Rigidbody2D bod;
     //PlayerController player;
-    Transform target;
     public float maxDisLow = 1.25f;
     public float maxDisHigh = 3f;
-    public float maxFollowDistance;
+    float maxFollowDistance;
     float dis;
 
     //[Space]
@@ -39,10 +39,26 @@ public class NPCController : MonoBehaviour
 
     protected float hp;
     public float maxHp;
+    [HideInInspector]
     public float spd;
+
+
+    //AI stuff
+    public Transform target;
+    public float nextWaypointDistance = 2f;
+    public float slowSpd;
+    Path path;
+    int currentWaypoint = 0;
+    bool reachedEndOfPath = false;
+    float distance;
+    Vector3 startPos;
+
+    Seeker seeker;
 
     private void Awake()
     {
+        seeker = GetComponent<Seeker>();
+        startPos = transform.position;
         //anim = GetComponent<Animator>();
         cont = FindObjectOfType<GameController>();
 
@@ -52,6 +68,8 @@ public class NPCController : MonoBehaviour
         h.transform.SetParent(uiParent.transform);
         nameText.text = npcName;
         hpBar = h.transform.GetChild(1).GetComponent<Image>();
+
+        h.SetActive(false);
 
         //base.Awake();
         target = GameObject.FindGameObjectWithTag("Player").transform;
@@ -81,9 +99,22 @@ public class NPCController : MonoBehaviour
 
     void OnEnable()
     {
-        h.SetActive(true);
+        InvokeRepeating("UpdatePath", 0f, 0.5f);
+    }
+
+    public void Alive()
+    {
+        if (h != null) h.SetActive(true);
+        if (hpBar == null) hpBar = h.transform.GetChild(1).GetComponent<Image>();
+        hp = maxHp;
+        if (hpBar != null) hpBar.fillAmount = (hp / maxHp);
         maxFollowDistance = Random.Range(maxDisLow, maxDisHigh);
-        hpBar.fillAmount = 1;
+    }
+
+    private void OnDisable()
+    {
+        h.SetActive(false);
+        ChangeState(npcstates.follow);
     }
 
     public void ChangeState(npcstates newState)
@@ -93,53 +124,73 @@ public class NPCController : MonoBehaviour
 
     void Die()
     {
-        h.SetActive(false);
-        ChangeState(npcstates.idle);
+        //Return into a zombie
+        GetComponent<EnemyController>().Zombify();
+        this.enabled = false;
     }
 
     void Idle()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && inRange)
-        {
-            h.SetActive(true);
-            ChangeState(npcstates.follow);
-        }
+        //if (Input.GetKeyDown(KeyCode.Q) && inRange)
+        //{
+        //    //h.SetActive(true);
+        //    ChangeState(npcstates.follow);
+        //}
     }
 
-    void Follow()
+    void UpdatePath()
     {
-        dis = Vector2.Distance(transform.position, target.position);
+        if (target == null)
+        {
+            seeker.StartPath(bod.position, startPos, OnPathComplete);
+            return;
+        }
+
+        if (seeker.IsDone() && target != null) seeker.StartPath(bod.position, target.position, OnPathComplete);
+    }
+
+    void OnPathComplete(Path p)
+    {
+        if (!p.error)
+        {
+            path = p;
+            currentWaypoint = 0;
+        }
+        else Debug.Log("Error making path");
+    }
+
+
+    void MovePath()
+    {
+        if (path == null) return;
+
+        if (currentWaypoint >= path.vectorPath.Count)
+        {
+            reachedEndOfPath = true;
+            return;
+        }
+        else
+        {
+            reachedEndOfPath = false;
+        }
+
+        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - bod.position).normalized;
+        Vector2 force = direction * spd * Time.deltaTime;
+
+        bod.AddForce(force);
+
+        distance = Vector2.Distance(bod.position, path.vectorPath[currentWaypoint]);
+        if (distance < nextWaypointDistance)
+        {
+            currentWaypoint++;
+        }
 
         //if (dis >= idleRange) ChangeState(npcstates.idle);
 
-        if (target != null)
-        {
-            Vector2 dir = target.position - transform.position;
-            bod.AddForce(dir * spd * Time.deltaTime);
-        }
-
-        if (target != null)
-        {
-            //Animator
-            //anim.SetFloat("moveX", bod.velocity.x);
-            //anim.SetFloat("moveY", bod.velocity.y);
-
-
-
-
-            //if (target.position.y > transform.position.y) rend.sprite = sprites[0];
-            //if (target.position.x < transform.position.x) rend.sprite = sprites[3];
-            //if (target.position.x > transform.position.x) rend.sprite = sprites[2];
-            //if (target.position.y < transform.position.y) rend.sprite = sprites[1];
-
-            //rend.flipX = (target.position.x > transform.position.x);
-        }
-
-        //if (Input.GetKeyDown(KeyCode.X))
+        //if (target != null && dis > maxFollowDistance)
         //{
-        //    n.SetActive(false);
-        //    h.SetActive(false);
-        //    ChangeState(npcstates.follow);
+        //    Vector2 dir = target.position - transform.position;
+        //    bod.AddForce(dir * spd * Time.deltaTime);
         //}
     }
 
@@ -164,6 +215,13 @@ public class NPCController : MonoBehaviour
     void GetPickup()
     {
 
+    }
+
+    void Follow()
+    {
+        //Distance to target
+        dis = Vector2.Distance(transform.position, target.position);
+        if (dis > maxFollowDistance) MovePath();
     }
 
     private void Update()

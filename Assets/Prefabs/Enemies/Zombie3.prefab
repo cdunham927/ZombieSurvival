@@ -5305,6 +5305,7 @@ GameObject:
   - component: {fileID: 9012513394749733595}
   - component: {fileID: 3886507091444320024}
   - component: {fileID: 1924640618781730602}
+  - component: {fileID: 6914191737329857449}
   m_Layer: 6
   m_Name: Zombie3
   m_TagString: Enemy
@@ -5445,11 +5446,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 75
+  zombifyHp: 50
   maxHp: 75
   deadSquid: {fileID: 2462998468356049340, guid: 379e905df5c4eb54ba8a5e4d7afd58c0,
     type: 3}
   chaseDistance: 50
   attackRange: 1
+  hpParent: {fileID: 1010890159994305614}
   health: {fileID: 1010890159712318835}
   lerpSpd: 5
   timeBetweenAttacks: 1
@@ -5684,3 +5687,29 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6914191737329857449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8709744822605573823}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7bf019ef4c06fe449493f5491a4d702, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curState: 1
+  inRange: 0
+  maxDisLow: 2
+  maxDisHigh: 4.5
+  npcName: Jeff
+  idleRange: 10
+  canFollow: 1
+  uiPrefab: {fileID: 2708072330178488837, guid: ab37440f61b71df418b30a2412301b6e,
+    type: 3}
+  maxHp: 100
+  spd: 500
+  target: {fileID: 0}
+  nextWaypointDistance: 2
+  slowSpd: 0

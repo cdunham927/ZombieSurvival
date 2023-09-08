@@ -573,11 +573,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 75
+  zombifyHp: 50
   maxHp: 75
   deadSquid: {fileID: 2462998468356049340, guid: 379e905df5c4eb54ba8a5e4d7afd58c0,
     type: 3}
   chaseDistance: 50
   attackRange: 1
+  hpParent: {fileID: 3855201573301010854}
   health: {fileID: 3855201573060774043}
   lerpSpd: 5
   timeBetweenAttacks: 1
@@ -893,16 +895,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curState: 1
   inRange: 0
-  maxDisLow: 1.25
-  maxDisHigh: 3
-  maxFollowDistance: 0
-  npcName: 
+  maxDisLow: 2
+  maxDisHigh: 4.5
+  npcName: Jeff
   idleRange: 10
   canFollow: 1
   uiPrefab: {fileID: 2708072330178488837, guid: ab37440f61b71df418b30a2412301b6e,
     type: 3}
   maxHp: 100
-  spd: 0
+  spd: 400
+  target: {fileID: 0}
+  nextWaypointDistance: 1.2
+  slowSpd: 125
 --- !u!1 &5323205584324948022
 GameObject:
   m_ObjectHideFlags: 0
